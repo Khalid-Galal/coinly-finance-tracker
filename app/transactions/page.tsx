@@ -1,4 +1,5 @@
 import { transactionRepository } from "@/lib/server/repositories/transactionRepository";
+import { CategorizeButton } from "./CategorizeButton";
 
 // Reads the DB at request time — never prerendered at build (no DB in the build env).
 export const dynamic = "force-dynamic";
@@ -16,6 +17,9 @@ export default async function TransactionsPage() {
         <a href="/dashboard">Dashboard</a> · <a href="/import">Import CSV</a> ·{" "}
         <a href="/quick-add">Add manually</a> · <a href="/accounts">Accounts</a>
       </p>
+      <p>
+        <CategorizeButton />
+      </p>
       {txns.length === 0 ? (
         <p>No transactions yet.</p>
       ) : (
@@ -24,6 +28,7 @@ export default async function TransactionsPage() {
             <tr>
               <th>Date</th>
               <th>Description</th>
+              <th>Category</th>
               <th>Amount</th>
               <th>Source</th>
             </tr>
@@ -33,6 +38,7 @@ export default async function TransactionsPage() {
               <tr key={t.id}>
                 <td>{t.date.toISOString().slice(0, 10)}</td>
                 <td>{t.description}</td>
+                <td>{t.category?.name ?? "—"}</td>
                 <td style={{ textAlign: "right" }}>{formatMinor(t.amountMinor, t.currency)}</td>
                 <td>{t.source}</td>
               </tr>

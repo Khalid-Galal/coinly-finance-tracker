@@ -1,6 +1,7 @@
 import { db } from "../db";
 import { matchByRules } from "./rules";
 import { llmCategorizeBatch, type LlmTx } from "./llm";
+import { seedDefaultTaxonomy } from "../categories/seed";
 
 export type CatAssignment = {
   index: number;
@@ -58,6 +59,40 @@ export async function categorizeBatch(txs: LlmTx[]): Promise<CatAssignment[]> {
   }
 
   return results;
+}
+
+const MAX_PER_RUN = 200; // cap per run to bound LLM quota use
+
+/** Seed the taxonomy if needed, then categorize all uncategorized transactions (rules-first). */
+export async function categorizeUncategorized(): Promise<{ categorized: number; total: number }> {
+  await seedDefaultTaxonomy();
+  const pending = await db.transaction.findMany({
+    where: { categoryId: null },
+    orderBy: { date: "desc" },
+    take: MAX_PER_RUN,
+  });
+  if (pending.length === 0) return { categorized: 0, total: 0 };
+
+  const assignments = await categorizeBatch(
+    pending.map((t) => ({
+      description: t.description,
+      payee: t.payee,
+      amountMinor: t.amountMinor,
+    })),
+  );
+
+  let categorized = 0;
+  for (let i = 0; i < pending.length; i++) {
+    const a = assignments[i];
+    if (a?.categoryId) {
+      await db.transaction.update({
+        where: { id: pending[i].id },
+        data: { categoryId: a.categoryId, aiConfidence: a.confidence },
+      });
+      categorized++;
+    }
+  }
+  return { categorized, total: pending.length };
 }
 
 /** Learn from a user correction: a merchant_exact rule so future identical merchants skip the LLM (FR-2.6). */

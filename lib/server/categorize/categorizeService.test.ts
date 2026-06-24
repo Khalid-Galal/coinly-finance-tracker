@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { db } from "../db";
-import { categorizeBatch, applyCorrection } from "./categorizeService";
+import { categorizeBatch, applyCorrection, categorizeUncategorized } from "./categorizeService";
 import { llmCategorizeBatch } from "./llm";
 
 vi.mock("./llm", () => ({ llmCategorizeBatch: vi.fn() }));
@@ -54,5 +54,32 @@ describe("applyCorrection", () => {
       categoryId: c.id,
       createdFromCorrection: true,
     });
+  });
+});
+
+describe("categorizeUncategorized", () => {
+  it("seeds the taxonomy and assigns categories to uncategorized transactions", async () => {
+    const acc = await db.account.create({
+      data: { name: "C", type: "bank", currency: "EGP", openingBalanceMinor: 0 },
+    });
+    await db.transaction.create({
+      data: {
+        accountId: acc.id,
+        date: new Date("2026-01-01"),
+        amountMinor: -5000,
+        currency: "EGP",
+        description: "Spinneys",
+        source: "csv",
+        dedupeHash: "u1",
+      },
+    });
+    vi.mocked(llmCategorizeBatch).mockResolvedValue([{ category: "Groceries", confidence: 0.9 }]);
+
+    expect(await categorizeUncategorized()).toEqual({ categorized: 1, total: 1 });
+
+    const tx = await db.transaction.findFirst({ where: { description: "Spinneys" } });
+    const groceries = await db.category.findFirst({ where: { name: "Groceries" } });
+    expect(tx?.categoryId).toBe(groceries?.id);
+    expect(tx?.aiConfidence).toBe(0.9);
   });
 });

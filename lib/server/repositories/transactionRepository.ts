@@ -45,6 +45,7 @@ export const transactionRepository = {
     return db.transaction.findMany({
       where: { accountId: filter?.accountId },
       orderBy: { date: "desc" },
+      include: { category: { select: { name: true } } },
     });
   },
 
