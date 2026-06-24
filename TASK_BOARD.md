@@ -51,7 +51,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | E2 | Budget progress bars | 3 | 3 | P1 | ☐ |
 | E3 | Budget warnings | 3 | 2 | P1 | ☐ |
 | F1 | Natural-language Q&A | 4 | 8 | P2 | ☐ |
-| F2 | SQL allowlist guard | 4 | 5 | P2 | ☐ |
+| F2 | SQL allowlist guard | 4 | 5 | P2 | ☑ |
 | F3 | Show generated SQL | 4 | 2 | P2 | ☐ |
 | F4 | Voice Q&A | 4 | 5 | P2 | ☐ |
 | F6 | Q&A evaluation set | 4 | 5 | P2 | ☐ |
