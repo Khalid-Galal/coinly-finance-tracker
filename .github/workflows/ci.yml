@@ -17,7 +17,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24 # match the npm 11 that generated package-lock.json
           cache: npm
 
       - run: npm ci # runs postinstall -> prisma generate
