@@ -10,8 +10,14 @@ describe("dedupeHash", () => {
 
   it("changes when any field changes (amount, description, account)", () => {
     const base = dedupeHash({ date: "2026-01-01", amountMinor: 100, description: "Costa" }, "acc1");
-    expect(dedupeHash({ date: "2026-01-01", amountMinor: 101, description: "Costa" }, "acc1")).not.toBe(base);
-    expect(dedupeHash({ date: "2026-01-01", amountMinor: 100, description: "Cost" }, "acc1")).not.toBe(base);
-    expect(dedupeHash({ date: "2026-01-01", amountMinor: 100, description: "Costa" }, "acc2")).not.toBe(base);
+    expect(
+      dedupeHash({ date: "2026-01-01", amountMinor: 101, description: "Costa" }, "acc1"),
+    ).not.toBe(base);
+    expect(
+      dedupeHash({ date: "2026-01-01", amountMinor: 100, description: "Cost" }, "acc1"),
+    ).not.toBe(base);
+    expect(
+      dedupeHash({ date: "2026-01-01", amountMinor: 100, description: "Costa" }, "acc2"),
+    ).not.toBe(base);
   });
 });
