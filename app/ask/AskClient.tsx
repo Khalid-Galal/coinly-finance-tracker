@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getSpeechRecognition, transcriptOf, type SpeechWindow } from "@/lib/shared/voice";
 
 type QaResult = {
   question: string;
@@ -24,9 +25,10 @@ function cell(key: string, v: unknown): string {
 export function AskClient() {
   const [question, setQuestion] = useState("");
   const [busy, setBusy] = useState(false);
+  const [listening, setListening] = useState(false);
   const [result, setResult] = useState<QaResult | null>(null);
 
-  async function ask(q: string) {
+  async function ask(q: string, speak = false) {
     const text = q.trim();
     if (!text || busy) return;
     setBusy(true);
@@ -37,12 +39,44 @@ export function AskClient() {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ question: text }),
       });
-      setResult(await res.json());
+      const data: QaResult = await res.json();
+      setResult(data);
+      // Voice round-trip: read the answer back when the question was spoken (US-F4).
+      if (speak && data.answer && typeof window !== "undefined" && window.speechSynthesis) {
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.answer));
+      }
     } catch (e) {
       setResult({ question: text, sql: null, rows: [], answer: "", error: (e as Error).message });
     } finally {
       setBusy(false);
     }
+  }
+
+  function startVoice() {
+    const Recognition = getSpeechRecognition(window as unknown as SpeechWindow);
+    if (!Recognition) {
+      setResult({
+        question: "",
+        sql: null,
+        rows: [],
+        answer: "",
+        error: "Voice input isn't supported in this browser. Try Chrome, or type your question.",
+      });
+      return;
+    }
+    const rec = new Recognition();
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    setListening(true);
+    rec.onresult = (e) => {
+      const text = transcriptOf(e);
+      setQuestion(text);
+      if (text) ask(text, true);
+    };
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    rec.start();
   }
 
   const columns = result && result.rows.length > 0 ? Object.keys(result.rows[0]) : [];
@@ -65,6 +99,15 @@ export function AskClient() {
         />
         <button type="submit" disabled={busy}>
           {busy ? "Asking…" : "Ask"}
+        </button>
+        <button
+          type="button"
+          onClick={startVoice}
+          disabled={busy || listening}
+          aria-label="Ask by voice"
+          title="Ask by voice"
+        >
+          {listening ? "🎙 Listening…" : "🎤"}
         </button>
       </form>
 
