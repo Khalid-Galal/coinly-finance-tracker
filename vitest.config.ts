@@ -9,5 +9,8 @@ export default defineConfig({
     // PrismaClient is constructed — tests must never touch the dev database.
     globalSetup: ["./vitest.globalSetup.ts"],
     setupFiles: ["./vitest.setup.ts"],
+    // DB-backed test files share one SQLite test.db; run files serially so their
+    // per-test resets don't race against each other.
+    fileParallelism: false,
   },
 });
