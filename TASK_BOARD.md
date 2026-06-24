@@ -16,7 +16,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | T2 Prisma + schema | US-A1 | ☑ |
 | T3 Health route + passcode | (infra) | ☑ |
 | T4 CI pipeline | US-G4 | ☑ |
-| T5 Deploy skeleton (Render+Turso) | US-G5 | ☐ |
+| T5 Deploy skeleton (live on Render) | US-G5 | ☑ |
 | T6 Governance docs ☑ / Trello + share (you) | (infra) | ◐ |
 
 ## Full backlog — all agreed user stories
@@ -25,7 +25,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 |----|-------|:------:|:---:|:----:|:------:|
 | A1 | Prisma schema | 0 | 3 | P0 | ☑ |
 | G4 | CI on every push | 0 | 5 | P0 | ☑ |
-| G5 | Auto-deploy to Render | 0 | 3 | P0 | ☐ |
+| G5 | Auto-deploy to Render | 0 | 3 | P0 | ☑ |
 | A2 | Import CIB CSV | 1 | 8 | P1 | ☐ |
 | A3 | Import Banque Misr CSV | 1 | 5 | P1 | ☐ |
 | A4 | Import NBE CSV | 1 | 5 | P3 | ☐ |

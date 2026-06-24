@@ -5,7 +5,7 @@ MSSE Capstone project — Quantic School of Business and Technology.
 
 ## Links
 
-- **Live demo:** _TBD — deployed in Sprint 0 Task 5 (Render + Turso)._ Passcode-gated; the passcode is provided to the grader.
+- **Live demo:** **https://coinly-kpdh.onrender.com** (Render free tier — sleeps when idle, first request cold-starts). `/api/*` is passcode-gated (`x-passcode` header); the passcode is provided to the grader. The home page and `/api/health` are public.
 - **Task board:** [`TASK_BOARD.md`](./TASK_BOARD.md) — version-controlled mirror of the Trello Scrum board. _Trello link: TBD._
 - **Design & testing:** [`DESIGN.md`](./DESIGN.md) · [`TESTING.md`](./TESTING.md)
 - **AI assistance disclosure:** [`AI_USAGE.md`](./AI_USAGE.md)
