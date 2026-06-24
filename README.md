@@ -41,7 +41,7 @@ npm run dev                # http://localhost:3000
 ```
 app/             Pages + API route handlers (thin)
 lib/server/      services / repositories / domain / infra (business logic)
-middleware.ts    Passcode gate for /api/*
+proxy.ts         Passcode gate for /api/*
 prisma/          schema + migrations
 e2e/             Playwright specs
 docs/            Planning specs & sprint plans (superpowers/)

@@ -1,7 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { checkPasscode } from "@/lib/server/passcode";
 
-export function middleware(req: NextRequest) {
+// Next 16 "proxy" convention (replaces the deprecated middleware.ts).
+export function proxy(req: NextRequest) {
   // Health check stays public — uptime probes and deploy smoke tests must reach it.
   if (req.nextUrl.pathname === "/api/health") return NextResponse.next();
 

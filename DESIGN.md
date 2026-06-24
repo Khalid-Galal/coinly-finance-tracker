@@ -28,7 +28,7 @@ All monetary values are stored as integer **minor units** (no floating point).
 | Layer | Location |
 | --- | --- |
 | Presentation | `app/` pages + components |
-| API | `app/api/*/route.ts` (thin) + `middleware.ts` (passcode gate) |
+| API | `app/api/*/route.ts` (thin) + `proxy.ts` (passcode gate) |
 | Application | `lib/server/services/` |
 | Domain | `lib/server/domain/` (pure entities + rules) |
 | Infrastructure | `lib/server/repositories/` (Prisma) + `lib/server/infra/` (Gemini, rates) |
@@ -45,7 +45,7 @@ All monetary values are stored as integer **minor units** (no floating point).
 
 ## Security
 
-The passcode middleware gates all `/api/*` routes (`/api/health` is intentionally public for
+The passcode proxy (`proxy.ts`, Next 16 convention) gates all `/api/*` routes (`/api/health` is intentionally public for
 uptime/smoke checks) and **fails closed** (503) in production if no passcode is configured.
 Secrets live in environment variables only. LLM-to-SQL adds a parser-based SELECT-only allowlist
 in Sprint 4. Dependencies are scanned (`npm audit`) on every CI run.
