@@ -13,8 +13,8 @@ export default async function TransactionsPage() {
     <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
       <h1>Transactions</h1>
       <p>
-        <a href="/import">Import CSV</a> · <a href="/quick-add">Add manually</a> ·{" "}
-        <a href="/accounts">Accounts</a>
+        <a href="/dashboard">Dashboard</a> · <a href="/import">Import CSV</a> ·{" "}
+        <a href="/quick-add">Add manually</a> · <a href="/accounts">Accounts</a>
       </p>
       {txns.length === 0 ? (
         <p>No transactions yet.</p>

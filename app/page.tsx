@@ -5,6 +5,9 @@ export default function Home() {
       <p>Self-hosted personal finance tracker.</p>
       <ul>
         <li>
+          <a href="/dashboard">Dashboard</a>
+        </li>
+        <li>
           <a href="/transactions">Transactions</a>
         </li>
         <li>
