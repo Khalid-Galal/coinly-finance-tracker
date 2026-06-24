@@ -1,0 +1,121 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Account {
+  id                  String        @id @default(cuid())
+  name                String
+  type                String
+  currency            String
+  openingBalanceMinor Int           @default(0)
+  archivedAt          DateTime?
+  transactions        Transaction[]
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+}
+
+model Category {
+  id           String               @id @default(cuid())
+  parentId     String?
+  parent       Category?            @relation("CatTree", fields: [parentId], references: [id])
+  children     Category[]           @relation("CatTree")
+  name         String
+  color        String?
+  icon         String?
+  archivedAt   DateTime?
+  transactions Transaction[]
+  rules        CategorizationRule[]
+  budgets      Budget[]
+}
+
+model Transaction {
+  id           String    @id @default(cuid())
+  accountId    String
+  account      Account   @relation(fields: [accountId], references: [id])
+  date         DateTime
+  amountMinor  Int
+  currency     String
+  description  String
+  payee        String?
+  categoryId   String?
+  category     Category? @relation(fields: [categoryId], references: [id])
+  aiConfidence Float?
+  source       String // "csv" | "manual" | "voice"
+  rawCsvRow    String?
+  dedupeHash   String    @unique
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([date])
+  @@index([categoryId])
+  @@index([accountId])
+}
+
+model CategorizationRule {
+  id                    String   @id @default(cuid())
+  matchType             String // "merchant_exact" | "contains"
+  pattern               String
+  categoryId            String
+  category              Category @relation(fields: [categoryId], references: [id])
+  createdFromCorrection Boolean  @default(true)
+}
+
+model Budget {
+  id          String   @id @default(cuid())
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  month       String // "YYYY-MM"
+  amountMinor Int
+  currency    String
+
+  @@unique([categoryId, month])
+}
+
+model ExchangeRate {
+  id    String   @id @default(cuid())
+  date  DateTime
+  base  String
+  quote String
+  rate  Float
+
+  @@unique([date, base, quote])
+}
+
+model Insight {
+  id          String   @id @default(cuid())
+  periodStart DateTime
+  periodEnd   DateTime
+  type        String // "weekly" | "monthly"
+  content     String
+  model       String?
+  generatedAt DateTime @default(now())
+}
+
+model QaHistory {
+  id           String   @id @default(cuid())
+  askedAt      DateTime @default(now())
+  question     String
+  generatedSql String?
+  resultJson   String?
+  wasUseful    Boolean?
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  entity     String
+  entityId   String
+  action     String
+  beforeJson String?
+  afterJson  String?
+  timestamp  DateTime @default(now())
+}
+
+model Setting {
+  key   String @id
+  value String
+}

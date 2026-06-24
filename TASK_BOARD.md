@@ -13,8 +13,8 @@ documenting completion of **all agreed user stories** — directly serving the P
 | Task | Delivers | Status |
 |---|---|---|
 | T1 Scaffold Next.js + tooling | (infra) | ☑ |
-| T2 Prisma + schema | US-A1 | ☐ |
-| T3 Health route + passcode | (infra) | ☐ |
+| T2 Prisma + schema | US-A1 | ☑ |
+| T3 Health route + passcode | (infra) | ☑ |
 | T4 CI pipeline | US-G4 | ☐ |
 | T5 Deploy skeleton (Render+Turso) | US-G5 | ☐ |
 | T6 Governance docs + Trello | (infra) | ☐ |
@@ -23,7 +23,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 
 | ID | Story | Sprint | Pts | Tier | Status |
 |----|-------|:------:|:---:|:----:|:------:|
-| A1 | Prisma schema | 0 | 3 | P0 | ☐ |
+| A1 | Prisma schema | 0 | 3 | P0 | ☑ |
 | G4 | CI on every push | 0 | 5 | P0 | ☐ |
 | G5 | Auto-deploy to Render | 0 | 3 | P0 | ☐ |
 | A2 | Import CIB CSV | 1 | 8 | P1 | ☐ |
