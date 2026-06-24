@@ -1,0 +1,23 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Deploys the Next.js app as a free web service. Node 24 matches the npm 11 lockfile.
+services:
+  - type: web
+    name: coinly
+    runtime: node
+    plan: free
+    region: frankfurt
+    branch: main
+    autoDeploy: true
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      # Skeleton has no DB-backed routes yet; placeholder keeps Prisma happy.
+      # Swap to Turso (TURSO_DATABASE_URL/TURSO_AUTH_TOKEN) in Sprint 1.
+      - key: DATABASE_URL
+        value: "file:./placeholder.db"
+      # Set this in the Render dashboard (Environment) — it gates /api/* on the live instance.
+      - key: APP_PASSCODE
+        sync: false
