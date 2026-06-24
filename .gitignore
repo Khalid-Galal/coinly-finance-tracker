@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# next.js
+.next/
+out/
+build/
+next-env.d.ts
+*.tsbuildinfo
+
+# test/coverage
+coverage/
+playwright-report/
+test-results/
+
+# env (never commit secrets)
+.env
+.env*.local
+
+# sqlite (local dev db)
+*.db
+*.db-journal
+prisma/*.db
+
+# os / editor
+.DS_Store
+Thumbs.db
+
+# Quantic handbook PDFs — copyrighted reference material, not redistributable
+/planning/document_pdf.pdf
+/planning/485cde250e33b317ebe46cbed02acffe.pdf
