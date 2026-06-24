@@ -1,0 +1,16 @@
+# Prettier formats source code only — prose/docs and tool-managed files are excluded.
+node_modules/
+.next/
+out/
+build/
+coverage/
+playwright-report/
+test-results/
+package-lock.json
+tsconfig.json
+next-env.d.ts
+planning/
+docs/
+prisma/
+*.md
+*.db
