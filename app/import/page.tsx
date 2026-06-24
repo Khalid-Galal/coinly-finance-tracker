@@ -1,0 +1,65 @@
+"use client";
+
+import { useEffect, useState, type FormEvent } from "react";
+
+type Account = { id: string; name: string };
+
+export default function ImportPage() {
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [accountId, setAccountId] = useState("");
+  const [result, setResult] = useState("");
+
+  useEffect(() => {
+    fetch("/api/accounts")
+      .then((r) => r.json())
+      .then((a: Account[]) => {
+        setAccounts(a);
+        if (a[0]) setAccountId(a[0].id);
+      });
+  }, []);
+
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+    form.set("accountId", accountId);
+    setResult("Importing…");
+    const res = await fetch("/api/import", { method: "POST", body: form });
+    const data = await res.json();
+    setResult(
+      res.ok ? `Imported ${data.imported}, skipped ${data.skipped}.` : `Error: ${data.error}`,
+    );
+  }
+
+  return (
+    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
+      <h1>Import CSV</h1>
+      <p>
+        <a href="/transactions">← Transactions</a>
+      </p>
+      {accounts.length === 0 ? (
+        <p>
+          No accounts yet. <a href="/accounts">Create one first.</a>
+        </p>
+      ) : (
+        <form onSubmit={onSubmit}>
+          <label>
+            Account:{" "}
+            <select value={accountId} onChange={(e) => setAccountId(e.target.value)}>
+              {accounts.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p>
+            <input type="file" name="file" accept=".csv,text/csv" required />
+          </p>
+          <button type="submit">Import</button>
+        </form>
+      )}
+      {result && <p>{result}</p>}
+    </main>
+  );
+}

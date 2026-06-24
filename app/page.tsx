@@ -2,8 +2,23 @@ export default function Home() {
   return (
     <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
       <h1>Coinly</h1>
-      <p>
-        Walking skeleton. Health check: <a href="/api/health">/api/health</a>
+      <p>Self-hosted personal finance tracker.</p>
+      <ul>
+        <li>
+          <a href="/transactions">Transactions</a>
+        </li>
+        <li>
+          <a href="/import">Import CSV</a>
+        </li>
+        <li>
+          <a href="/quick-add">Add transaction</a>
+        </li>
+        <li>
+          <a href="/accounts">Accounts</a>
+        </li>
+      </ul>
+      <p style={{ color: "#666", fontSize: 13 }}>
+        Health: <a href="/api/health">/api/health</a>
       </p>
     </main>
   );

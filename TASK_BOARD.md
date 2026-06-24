@@ -29,9 +29,9 @@ documenting completion of **all agreed user stories** — directly serving the P
 | A2 | Import CIB CSV | 1 | 8 | P1 | ☐ |
 | A3 | Import Banque Misr CSV | 1 | 5 | P1 | ☐ |
 | A4 | Import NBE CSV | 1 | 5 | P3 | ☐ |
-| A5 | Duplicate detection | 1 | 3 | P1 | ☐ |
-| A6 | Manual transaction entry | 1 | 5 | P1 | ☐ |
-| A7 | Multiple accounts | 1 | 5 | P1 | ☐ |
+| A5 | Duplicate detection | 1 | 3 | P1 | ☑ |
+| A6 | Manual transaction entry | 1 | 5 | P1 | ☑ |
+| A7 | Multiple accounts | 1 | 5 | P1 | ☑ |
 | A8 | Daily exchange rates | 1 | 3 | P1 | ☐ |
 | B1 | Default taxonomy | 2 | 3 | P1 | ☐ |
 | B2 | Manage categories | 2 | 5 | P1 | ☐ |
