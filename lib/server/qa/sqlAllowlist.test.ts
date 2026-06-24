@@ -34,4 +34,22 @@ describe("validateSql", () => {
   it("rejects unparseable input", () => {
     expect(ok("not sql at all ;;;")).toBe(false);
   });
+
+  // Adversarial: a SELECT can still reach base tables through subqueries, CTEs, UNION,
+  // or JOINs. These prove node-sql-parser's tableList recurses into all of them, so the
+  // allowlist catches the smuggled table. Regression guard if node-sql-parser is upgraded.
+  it("rejects base tables smuggled in via subqueries, CTEs, UNION, and JOINs", () => {
+    expect(ok("SELECT * FROM v_transactions WHERE id IN (SELECT id FROM Account)")).toBe(false);
+    expect(ok("WITH x AS (SELECT id FROM Account) SELECT * FROM x")).toBe(false);
+    expect(ok("SELECT (SELECT value FROM Setting LIMIT 1) AS leak FROM v_transactions")).toBe(
+      false,
+    );
+    expect(ok("SELECT * FROM v_transactions UNION SELECT * FROM Account")).toBe(false);
+    expect(ok("SELECT * FROM v_transactions JOIN Account ON 1=1")).toBe(false);
+  });
+
+  it("rejects PRAGMA and ATTACH (schema probing / file access)", () => {
+    expect(ok("PRAGMA table_info(Account)")).toBe(false);
+    expect(ok("ATTACH DATABASE 'evil.db' AS y")).toBe(false);
+  });
 });

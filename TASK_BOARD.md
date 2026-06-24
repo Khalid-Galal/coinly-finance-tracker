@@ -50,9 +50,9 @@ documenting completion of **all agreed user stories** — directly serving the P
 | E1 | Set monthly budget | 3 | 3 | P1 | ☐ |
 | E2 | Budget progress bars | 3 | 3 | P1 | ☐ |
 | E3 | Budget warnings | 3 | 2 | P1 | ☐ |
-| F1 | Natural-language Q&A | 4 | 8 | P2 | ☐ |
+| F1 | Natural-language Q&A | 4 | 8 | P2 | ☑ |
 | F2 | SQL allowlist guard | 4 | 5 | P2 | ☑ |
-| F3 | Show generated SQL | 4 | 2 | P2 | ☐ |
+| F3 | Show generated SQL | 4 | 2 | P2 | ☑ |
 | F4 | Voice Q&A | 4 | 5 | P2 | ☐ |
 | F6 | Q&A evaluation set | 4 | 5 | P2 | ☐ |
 | G6 | ≥70% test coverage | 4 | 8 | P1 | ☐ |
@@ -75,7 +75,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | 1 Data | 34 | ◐ In progress (A3/A4 need CSV samples) |
 | 2 AI + Dashboard | 35 | ☐ |
 | 3 Insights/Budgets | 34 | ☐ |
-| 4 Q&A + Voice | 33 | ☐ |
+| 4 Q&A + Voice | 33 | ◐ In progress (F1/F2/F3 done — guarded LLM-to-SQL live) |
 | 5 Polish | 31 | ☐ |
 | 6 Submission | 5 | ☐ |
 

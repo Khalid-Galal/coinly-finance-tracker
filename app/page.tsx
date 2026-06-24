@@ -19,6 +19,9 @@ export default function Home() {
         <li>
           <a href="/accounts">Accounts</a>
         </li>
+        <li>
+          <a href="/ask">Ask Coinly</a>
+        </li>
       </ul>
       <p style={{ color: "#666", fontSize: 13 }}>
         Health: <a href="/api/health">/api/health</a>

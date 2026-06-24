@@ -1,0 +1,136 @@
+import { db } from "../db";
+import { geminiGenerateText } from "../infra/geminiClient";
+import { validateSql } from "./sqlAllowlist";
+
+/** Views the LLM is allowed to query (mirrors prisma/migrations/.../qa_readonly_views). */
+const ALLOWED_VIEWS = ["v_transactions", "v_category_totals"];
+
+const SCHEMA_DOC = `You translate a personal-finance question into ONE read-only SQLite SELECT query.
+
+Available read-only views (use ONLY these):
+
+v_transactions — one row per transaction
+  id           TEXT
+  date         TEXT     -- 'YYYY-MM-DD'
+  month        TEXT     -- 'YYYY-MM'
+  amountMinor  INTEGER  -- money in MINOR units (1 EGP = 100). NEGATIVE = expense, POSITIVE = income
+  currency     TEXT
+  description  TEXT
+  payee        TEXT
+  category     TEXT     -- 'Uncategorized' when none assigned
+  account      TEXT
+  source       TEXT     -- 'csv' | 'manual' | 'voice'
+
+v_category_totals — totals per category per month
+  category     TEXT
+  month        TEXT     -- 'YYYY-MM'
+  txnCount     INTEGER
+  expenseMinor INTEGER  -- total spent, positive, minor units
+  incomeMinor  INTEGER  -- total received, positive, minor units
+
+Rules:
+- SELECT only. No INSERT/UPDATE/DELETE/DDL, no comments, no semicolons, no multiple statements.
+- Reference ONLY the two views above. Never reference base tables.
+- Amounts are already in minor units; do NOT divide by 100.
+- Output ONLY the SQL query. No explanation, no markdown fences.`;
+
+export type QaResult = {
+  question: string;
+  sql: string | null;
+  rows: Record<string, unknown>[];
+  answer: string;
+  error?: string;
+};
+
+function buildPrompt(question: string): string {
+  return `${SCHEMA_DOC}\n\nQuestion: ${question}\nSQL:`;
+}
+
+/** Pull the bare SQL out of an LLM response: strip markdown fences and a trailing semicolon. */
+export function extractSql(raw: string): string {
+  let s = raw.trim();
+  const fence = s.match(/```(?:sql)?\s*([\s\S]*?)```/i);
+  if (fence) s = fence[1].trim();
+  return s.replace(/;+\s*$/, "").trim();
+}
+
+/** SQLite aggregates can come back as BigInt; JSON/Response can't serialize those. */
+function normalizeRows(rows: Record<string, unknown>[]): Record<string, unknown>[] {
+  return rows.map((r) => {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(r)) out[k] = typeof v === "bigint" ? Number(v) : v;
+    return out;
+  });
+}
+
+function formatValue(key: string, v: unknown): string {
+  if (typeof v === "number" && /minor$/i.test(key)) return (v / 100).toFixed(2);
+  return v === null ? "—" : String(v);
+}
+
+/** A short, deterministic answer. We never send result rows back to the LLM (data minimization). */
+function formatAnswer(rows: Record<string, unknown>[]): string {
+  if (rows.length === 0) return "No matching results.";
+  if (rows.length === 1) {
+    const entries = Object.entries(rows[0]);
+    if (entries.length === 1)
+      return `${entries[0][0]}: ${formatValue(entries[0][0], entries[0][1])}`;
+  }
+  return `${rows.length} result${rows.length === 1 ? "" : "s"}.`;
+}
+
+async function saveHistory(
+  question: string,
+  sql: string | null,
+  rows: Record<string, unknown>[] | null,
+) {
+  // Best-effort: a logging failure must never break the answer.
+  try {
+    await db.qaHistory.create({
+      data: { question, generatedSql: sql, resultJson: rows ? JSON.stringify(rows) : null },
+    });
+  } catch {
+    /* ignore */
+  }
+}
+
+/**
+ * Guarded LLM-to-SQL: question -> Gemini generates SQL -> allowlist validation ->
+ * read-only execution -> deterministic answer. The SQL is returned for transparency (US-F3).
+ */
+export async function askQuestion(question: string): Promise<QaResult> {
+  const q = question.trim();
+  if (!q) return { question, sql: null, rows: [], answer: "", error: "Question is empty." };
+
+  const raw = await geminiGenerateText(buildPrompt(q));
+  const sql = extractSql(raw);
+
+  const valid = validateSql(sql, ALLOWED_VIEWS);
+  if (!valid.ok) {
+    await saveHistory(q, sql, null);
+    return {
+      question: q,
+      sql,
+      rows: [],
+      answer: "",
+      error: `Unsafe query rejected: ${valid.reason}`,
+    };
+  }
+
+  let rows: Record<string, unknown>[];
+  try {
+    rows = normalizeRows((await db.$queryRawUnsafe(sql)) as Record<string, unknown>[]);
+  } catch (e) {
+    await saveHistory(q, sql, null);
+    return {
+      question: q,
+      sql,
+      rows: [],
+      answer: "",
+      error: `Query failed: ${(e as Error).message}`,
+    };
+  }
+
+  await saveHistory(q, sql, rows);
+  return { question: q, sql, rows, answer: formatAnswer(rows) };
+}
