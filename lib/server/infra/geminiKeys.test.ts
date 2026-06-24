@@ -16,6 +16,11 @@ describe("loadGeminiKeys", () => {
     ).toEqual(["a", "b", "c"]);
   });
 
+  it("reads GOOGLE_API_KEYS / GEMINI_API_KEYS comma lists", () => {
+    expect(loadGeminiKeys({ GOOGLE_API_KEYS: "a, b" })).toEqual(["a", "b"]);
+    expect(loadGeminiKeys({ GEMINI_API_KEYS: "x,y" })).toEqual(["x", "y"]);
+  });
+
   it("returns an empty list when nothing is configured", () => {
     expect(loadGeminiKeys({})).toEqual([]);
   });
