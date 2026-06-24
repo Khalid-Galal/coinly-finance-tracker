@@ -32,7 +32,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | A5 | Duplicate detection | 1 | 3 | P1 | ☑ |
 | A6 | Manual transaction entry | 1 | 5 | P1 | ☑ |
 | A7 | Multiple accounts | 1 | 5 | P1 | ☑ |
-| A8 | Daily exchange rates | 1 | 3 | P1 | ☐ |
+| A8 | Daily exchange rates | 1 | 3 | P1 | ☑ |
 | B1 | Default taxonomy | 2 | 3 | P1 | ☐ |
 | B2 | Manage categories | 2 | 5 | P1 | ☐ |
 | B3 | AI auto-categorize | 2 | 8 | P1 | ☐ |
@@ -71,8 +71,8 @@ documenting completion of **all agreed user stories** — directly serving the P
 
 | Sprint | Pts | Status |
 |---|:---:|---|
-| 0 Foundation | 11 | ◐ In progress |
-| 1 Data | 34 | ☐ |
+| 0 Foundation | 11 | ☑ Done (live + CI green) |
+| 1 Data | 34 | ◐ In progress (A3/A4 need CSV samples) |
 | 2 AI + Dashboard | 35 | ☐ |
 | 3 Insights/Budgets | 34 | ☐ |
 | 4 Q&A + Voice | 33 | ☐ |
