@@ -17,7 +17,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | T3 Health route + passcode | (infra) | ☑ |
 | T4 CI pipeline | US-G4 | ☑ |
 | T5 Deploy skeleton (Render+Turso) | US-G5 | ☐ |
-| T6 Governance docs + Trello | (infra) | ☐ |
+| T6 Governance docs ☑ / Trello + share (you) | (infra) | ◐ |
 
 ## Full backlog — all agreed user stories
 
