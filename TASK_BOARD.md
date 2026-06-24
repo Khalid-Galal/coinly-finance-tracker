@@ -36,10 +36,10 @@ documenting completion of **all agreed user stories** — directly serving the P
 | B1 | Default taxonomy | 2 | 3 | P1 | ☑ |
 | B2 | Manage categories | 2 | 5 | P1 | ☐ |
 | B3 | AI auto-categorize | 2 | 8 | P1 | ☑ |
-| B4 | Correction learning | 2 | 5 | P1 | ☐ |
+| B4 | Correction learning | 2 | 5 | P1 | ☑ |
 | B5 | LLM batching | 2 | 3 | P1 | ☑ |
 | C1 | Summary card | 2 | 3 | P1 | ☑ |
-| C2 | Category pie chart | 2 | 5 | P1 | ☐ |
+| C2 | Category pie chart | 2 | 5 | P1 | ☑ |
 | C5 | Date-range filter | 2 | 3 | P1 | ☑ |
 | B6 | Rules-only fallback | 3 | 3 | P1 | ☑ |
 | C3 | Monthly trend chart | 3 | 5 | P1 | ☐ |

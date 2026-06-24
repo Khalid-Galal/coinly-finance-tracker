@@ -15,6 +15,7 @@ export default async function DashboardPage({
     ? (raw as RangePreset)
     : "this-month";
   const s = await summarize(resolveRange(preset, new Date()));
+  const maxExpense = s.byCategory[0]?.expenseMinor ?? 0;
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
@@ -34,6 +35,7 @@ export default async function DashboardPage({
           </a>
         ))}
       </p>
+
       <table border={1} cellPadding={8} style={{ borderCollapse: "collapse" }}>
         <tbody>
           <tr>
@@ -50,7 +52,33 @@ export default async function DashboardPage({
           </tr>
         </tbody>
       </table>
-      <p style={{ color: "#666", fontSize: 13 }}>
+
+      <h2 style={{ marginTop: 24 }}>Spending by category</h2>
+      {s.byCategory.length === 0 ? (
+        <p>No expenses in this range.</p>
+      ) : (
+        <table cellPadding={4} style={{ borderCollapse: "collapse" }}>
+          <tbody>
+            {s.byCategory.map((c) => (
+              <tr key={c.categoryId ?? "none"}>
+                <td style={{ paddingRight: 12 }}>{c.name}</td>
+                <td>
+                  <div
+                    style={{
+                      background: "#4a90d9",
+                      height: 12,
+                      width: `${maxExpense ? Math.max(2, (c.expenseMinor / maxExpense) * 240) : 2}px`,
+                    }}
+                  />
+                </td>
+                <td style={{ paddingLeft: 12, textAlign: "right" }}>{fmt(c.expenseMinor)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      <p style={{ color: "#666", fontSize: 13, marginTop: 16 }}>
         {s.count} transactions in range. Amounts in base currency (single-currency MVP).
       </p>
     </main>
