@@ -55,6 +55,7 @@ npm run dev                # http://localhost:3000
 | `npm run test:coverage` | Vitest with coverage (CI gate ≥ 70%) |
 | `npm run e2e` | Playwright end-to-end |
 | `npm run eval` | Live LLM-to-SQL accuracy eval vs. real Gemini (needs API keys) |
+| `npm run turso:schema` | Emit the full schema SQL for applying to a Turso DB (`\| turso db shell <db>`) |
 
 ## Project layout
 

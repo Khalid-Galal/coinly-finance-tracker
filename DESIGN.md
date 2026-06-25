@@ -30,9 +30,9 @@ integer **minor units** (no floating point).
 
 **Activate Turso:** (1) `turso db create coinly` and `turso db tokens create coinly`; (2) set
 `TURSO_DATABASE_URL` (the `libsql://…` URL) and `TURSO_AUTH_TOKEN` in the Render dashboard;
-(3) apply the schema once — e.g. `turso db shell coinly < prisma/migrations/*/migration.sql` (the
-migration engine uses the built-in SQLite connector, so migrations are applied to Turso out-of-band
-while the running app talks to it via the adapter).
+(3) apply the schema once with `npm run turso:schema | turso db shell coinly` — this concatenates
+all migrations in order (Prisma's migration engine can't drive a `libsql://` URL directly, so the
+schema is applied out-of-band while the running app talks to Turso via the adapter).
 
 ## Layered structure
 
