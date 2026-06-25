@@ -95,42 +95,39 @@ async function saveHistory(
 }
 
 /**
- * Guarded LLM-to-SQL: question -> Gemini generates SQL -> allowlist validation ->
- * read-only execution -> deterministic answer. The SQL is returned for transparency (US-F3).
+ * Validate SQL against the allowlist and execute it read-only, returning normalized rows.
+ * Throws "Unsafe query rejected: ..." if the guard refuses it, "Query failed: ..." on a DB error.
+ * The single choke point through which every LLM-generated query must pass.
  */
-export async function askQuestion(question: string): Promise<QaResult> {
+export async function runReadOnlySql(sql: string): Promise<Record<string, unknown>[]> {
+  const valid = validateSql(sql, ALLOWED_VIEWS);
+  if (!valid.ok) throw new Error(`Unsafe query rejected: ${valid.reason}`);
+  try {
+    return normalizeRows((await db.$queryRawUnsafe(sql)) as Record<string, unknown>[]);
+  } catch (e) {
+    throw new Error(`Query failed: ${(e as Error).message}`);
+  }
+}
+
+/**
+ * Guarded LLM-to-SQL: question -> generate SQL -> allowlist validation -> read-only
+ * execution -> deterministic answer. The SQL is returned for transparency (US-F3).
+ * `generate` is injectable so the eval harness can drive the pipeline with reference SQL.
+ */
+export async function askQuestion(
+  question: string,
+  generate: (prompt: string) => Promise<string> = geminiGenerateText,
+): Promise<QaResult> {
   const q = question.trim();
   if (!q) return { question, sql: null, rows: [], answer: "", error: "Question is empty." };
 
-  const raw = await geminiGenerateText(buildPrompt(q));
-  const sql = extractSql(raw);
-
-  const valid = validateSql(sql, ALLOWED_VIEWS);
-  if (!valid.ok) {
-    await saveHistory(q, sql, null);
-    return {
-      question: q,
-      sql,
-      rows: [],
-      answer: "",
-      error: `Unsafe query rejected: ${valid.reason}`,
-    };
-  }
-
-  let rows: Record<string, unknown>[];
+  const sql = extractSql(await generate(buildPrompt(q)));
   try {
-    rows = normalizeRows((await db.$queryRawUnsafe(sql)) as Record<string, unknown>[]);
+    const rows = await runReadOnlySql(sql);
+    await saveHistory(q, sql, rows);
+    return { question: q, sql, rows, answer: formatAnswer(rows) };
   } catch (e) {
     await saveHistory(q, sql, null);
-    return {
-      question: q,
-      sql,
-      rows: [],
-      answer: "",
-      error: `Query failed: ${(e as Error).message}`,
-    };
+    return { question: q, sql, rows: [], answer: "", error: (e as Error).message };
   }
-
-  await saveHistory(q, sql, rows);
-  return { question: q, sql, rows, answer: formatAnswer(rows) };
 }

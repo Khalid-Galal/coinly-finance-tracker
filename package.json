@@ -12,6 +12,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "eval": "node scripts/eval.mjs",
     "e2e": "playwright test",
     "postinstall": "prisma generate"
   },
