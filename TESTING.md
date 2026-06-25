@@ -22,7 +22,7 @@ have wiped real dev data.
 Target ≥ 70% (NFR-4.1). The hard CI gate is **enabled** (US-G6): `vitest` thresholds fail the
 build below 70% on lines / statements / functions / branches, scoped to the testable `lib/**`
 server logic (app routes and React components are exercised by Playwright, not unit-counted).
-Actual coverage is ~93% lines across ~120 tests.
+Actual coverage is ~93% lines across ~126 tests.
 
 ## What's tested
 

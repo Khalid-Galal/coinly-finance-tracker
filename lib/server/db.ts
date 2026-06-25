@@ -1,7 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 
 // Singleton — avoids exhausting connections during Next.js dev hot-reload.
-// The libSQL/Turso adapter is wired in Sprint 0 Task 5 (deployed DB).
+// Bound to DATABASE_URL (SQLite locally and on Render). Turso libSQL is an optional
+// persistence upgrade for the deployed instance — not currently wired (see DESIGN.md).
 const g = globalThis as unknown as { prisma?: PrismaClient };
 
 export const db = g.prisma ?? new PrismaClient();

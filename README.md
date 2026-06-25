@@ -23,14 +23,14 @@ MSSE Capstone project — Quantic School of Business and Technology.
 
 ## Links
 
-- **Live demo:** **https://coinly-kpdh.onrender.com** (Render free tier — sleeps when idle, first request cold-starts). `/api/*` is passcode-gated (`x-passcode` header); the passcode is provided to the grader. The home page and `/api/health` are public.
+- **Live demo:** **https://coinly-kpdh.onrender.com** (Render free tier — sleeps when idle, first request cold-starts; storage is ephemeral, so data resets on redeploy). `/api/*` is passcode-gated (`x-passcode` header); the passcode is provided to the grader. The home page and `/api/health` are public.
 - **Task board:** [`TASK_BOARD.md`](./TASK_BOARD.md) — version-controlled mirror of the Trello Scrum board. _Trello link: TBD._
 - **Design & testing:** [`DESIGN.md`](./DESIGN.md) · [`TESTING.md`](./TESTING.md)
 - **AI assistance disclosure:** [`AI_USAGE.md`](./AI_USAGE.md)
 
 ## Tech stack
 
-Next.js 16 (App Router, full-stack) · React 19 · TypeScript (strict) · Prisma — SQLite (local) / Turso libSQL (deployed) · Vitest + Playwright · ESLint 9 + Prettier · GitHub Actions · Google Gemini (AI features).
+Next.js 16 (App Router, full-stack) · React 19 · TypeScript (strict) · Prisma + SQLite (local and deployed; Turso libSQL is an optional persistence upgrade, not yet wired) · Vitest + Playwright · ESLint 9 + Prettier · GitHub Actions · Google Gemini (AI features).
 
 ## Local setup
 

@@ -19,9 +19,12 @@ CI failure surface. The SRS layered architecture is preserved as plain modules (
 **Reason:** Next 14 is end-of-life with unpatched high-severity advisories; the only fix is a
 major bump, which is near-zero cost while the project is greenfield. `npm audit` is clean (0).
 
-### 3. Local-first persistence with cloud parity
-SQLite (local) and Turso/libSQL (deployed) through Prisma — identical SQL semantics in both.
-All monetary values are stored as integer **minor units** (no floating point).
+### 3. Local-first persistence
+SQLite through Prisma, both locally and on the deployed instance (Render runs `prisma migrate
+deploy` at build, creating the schema + the read-only Q&A views). The free-tier disk is
+**ephemeral** — data resets on redeploy — so Turso/libSQL is documented below as an optional
+persistence upgrade (wiring the `@prisma/adapter-libsql` driver), not yet implemented. All
+monetary values are stored as integer **minor units** (no floating point).
 
 ## Layered structure
 
@@ -59,13 +62,14 @@ in Sprint 4. Dependencies are scanned (`npm audit`) on every CI run.
 | Option | Topology | Cost | Notes |
 | --- | --- | --- | --- |
 | Local self-host | SQLite + Node on a laptop | $0 | Max privacy; no remote access |
-| **Cloud demo (recommended)** | Render web + Turso libSQL + passcode | $0 (free tiers) | Public demo URL for the grader |
+| **Cloud demo (current)** | Render web + SQLite (ephemeral) + passcode | $0 (free tiers) | Public demo URL; migrations run at build. Data resets on redeploy |
+| Cloud demo + persistence | Render web + Turso libSQL + passcode | $0 (free tiers) | Add the libSQL adapter for data that survives redeploys (not yet wired) |
 | Fly.io + volume | Fly app + persistent volume + SQLite | $0–5/mo | True SQLite in the cloud |
 | Multi-user production | Container + PostgreSQL + auth + WAF | $20–50/mo | Out of scope for this capstone |
 
 ## Data model
 
-See `prisma/schema.prisma` (11 models: Account, Category, Transaction, CategorizationRule,
+See `prisma/schema.prisma` (10 models: Account, Category, Transaction, CategorizationRule,
 Budget, ExchangeRate, Insight, QaHistory, AuditLog, Setting). Money in minor units; dedupe via a
 unique hash on transactions; indexes on transaction `date`, `categoryId`, `accountId`.
 

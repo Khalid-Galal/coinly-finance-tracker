@@ -27,7 +27,7 @@ jobs:
       - run: npm run typecheck
 
       - run: npm run test:coverage
-      - run: npm audit --audit-level=high
+      - run: npm audit --omit=dev --audit-level=high # gate on shipped deps, not dev tooling
 
       - run: npm run build
 

@@ -8,16 +8,14 @@ documenting completion of **all agreed user stories** — directly serving the P
 **Status:** ☐ Todo · ◐ In progress · ☑ Done · ⏸ Blocked · ✂ Moved to v2
 **Tiers (roadmap §4):** P0 never cut · P1 the pass · P2 wins the 5 (protect) · P3 first to v2
 
-## Current sprint: **Sprint 0 — Foundation**
+## Current sprint: **Sprint 6 — Submission**
 
 | Task | Delivers | Status |
 |---|---|---|
-| T1 Scaffold Next.js + tooling | (infra) | ☑ |
-| T2 Prisma + schema | US-A1 | ☑ |
-| T3 Health route + passcode | (infra) | ☑ |
-| T4 CI pipeline | US-G4 | ☑ |
-| T5 Deploy skeleton (live on Render) | US-G5 | ☑ |
-| T6 Governance docs ☑ / Trello + share (you) | (infra) | ◐ |
+| Sprints 0–5 feature work | all P0/P1/P2 stories | ☑ |
+| G7 README + design/testing docs | US-G7 | ☑ |
+| Pre-submission self-audit + fixes | (quality) | ☑ |
+| Trello board public + linked / recorded demo video | (you) | ◐ |
 
 ## Full backlog — all agreed user stories
 
@@ -26,7 +24,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | A1 | Prisma schema | 0 | 3 | P0 | ☑ |
 | G4 | CI on every push | 0 | 5 | P0 | ☑ |
 | G5 | Auto-deploy to Render | 0 | 3 | P0 | ☑ |
-| A2 | Import CIB CSV | 1 | 8 | P1 | ☐ |
+| A2 | Import CIB CSV | 1 | 8 | P1 | ☑ |
 | A3 | Import Banque Misr CSV | 1 | 5 | P1 | ☑ |
 | A4 | Import NBE CSV | 1 | 5 | P3 | ☑ |
 | A5 | Duplicate detection | 1 | 3 | P1 | ☑ |
@@ -56,16 +54,17 @@ documenting completion of **all agreed user stories** — directly serving the P
 | F4 | Voice Q&A | 4 | 5 | P2 | ☑ |
 | F6 | Q&A evaluation set | 4 | 5 | P2 | ☑ |
 | G6 | ≥70% test coverage | 4 | 8 | P1 | ☑ |
-| C4 | Chart drill-down | 5 | 5 | P3 | ☐ |
+| C4 | Chart drill-down | 5 | 5 | P3 | ✂ |
 | C6 | Mobile responsive | 5 | 5 | P1 | ☑ |
-| B7 | Accuracy report | 5 | 5 | P3 | ☐ |
-| F5 | Voice quick-add | 5 | 5 | P3 | ☐ |
+| B7 | Accuracy report | 5 | 5 | P3 | ✂ |
+| F5 | Voice quick-add | 5 | 5 | P3 | ✂ |
 | G1 | First-run wizard | 5 | 5 | P1 | ☑ |
 | G2 | Change base currency | 5 | 3 | P1 | ☑ |
-| G3 | JSON export/import | 5 | 3 | P3 | ☐ |
+| G3 | JSON export/import | 5 | 3 | P3 | ✂ |
 | G7 | README + design doc | 6 | 5 | P1 | ☑ |
 
-**Total: 183 pts.** v2 cut set if behind (~23 pts): A4, B7, C4, F5, G3 (never cut P2; C6 is required).
+**Total: 183 pts.** ✂ Deferred to v2 (P3, ~18 pts): B7, C4, F5, G3. All P0/P1/P2 stories
+delivered; A4 (NBE) was in the cut set but shipped via the shared debit/credit parser.
 
 ## Sprint summary
 
@@ -73,11 +72,11 @@ documenting completion of **all agreed user stories** — directly serving the P
 |---|:---:|---|
 | 0 Foundation | 11 | ☑ Done (live + CI green) |
 | 1 Data | 34 | ☑ Done (CIB/Banque Misr/NBE via debit-credit parser; generic fallback) |
-| 2 AI + Dashboard | 35 | ☐ |
+| 2 AI + Dashboard | 35 | ☑ Done (taxonomy, AI categorize + correction learning, summary, category chart, date filter) |
 | 3 Insights/Budgets | 34 | ☑ Done (trend chart, budgets, AI weekly/monthly insights + anomalies + cost cap) |
 | 4 Q&A + Voice | 33 | ☑ Done (guarded LLM-to-SQL + voice + eval; ≥70% coverage gate enforced) |
-| 5 Polish | 31 | ◐ P1 done (B2, C6, G1, G2); P3 set (C4, B7, F5, G3) deferred to v2 |
-| 6 Submission | 5 | ☐ |
+| 5 Polish | 31 | ☑ Done (P1: B2, C6, G1, G2); P3 C4/B7/F5/G3 moved to v2 |
+| 6 Submission | 5 | ◐ Docs + pre-submission audit done; recorded demo + Trello link + live-deploy verify pending (you) |
 
 ## Definition of Done (per story)
 Merged via reviewed PR · unit+integration tests pass in CI · lint/format/types pass · acceptance

@@ -16,7 +16,7 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 - [ ] `AI_USAGE.md` + `CITATIONS.md` present and current — **plagiarism = automatic 0**
 
 ### A2. Deployed version — *"link to the deployed version (if a Web application)"*
-- [ ] Live Render + Turso URL reachable from the README ⚠️
+- [ ] Live Render URL reachable from the README ⚠️ (SQLite; data resets on redeploy — warm + seed before grading)
 - [ ] Passcode gate works **and the passcode is given to the grader** (in README or submission) ⚠️
 - [ ] HTTPS enforced (NFR-3.3)
 - [ ] Instance warmed before grading (Render free tier cold-starts → looks broken)
@@ -29,10 +29,10 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 - [ ] Board reflects real sprint columns (Sprint 0–5), not one dump of cards
 
 ### A4. Design & testing document — *"well-designed and well-tested, patterns + reasons, all testing + methods"*
-- [ ] `DESIGN.md`: architecture diagram + the 7 patterns **each with a reason** (Repository, Strategy, Service Layer, Adapter, Pipeline, Guarded LLM-to-SQL, Cost-Capped client)
+- [ ] `DESIGN.md`: architecture diagram + the 8 patterns **each with a reason** (Repository, Strategy, Service Layer, Adapter, Pipeline, Guarded LLM-to-SQL, Multi-key rotation, Cost-capped insights)
 - [ ] `DESIGN.md`: deployment options table **with cost implications** (handbook explicitly asks for this)
 - [ ] `TESTING.md`: test pyramid, what's covered, and **why** each method was chosen
-- [ ] LLM-to-SQL eval methodology documented; `docs/evals/` has dated JSON results
+- [ ] LLM-to-SQL eval methodology documented in `docs/EVAL.md`; run `npm run eval` for live accuracy (set `EVAL_OUT=<path>` to write a per-question report artifact)
 - [ ] Coverage ≥ 70% line, shown as a CI artifact/badge (NFR-4.1)
 
 ### A5. Methodology + collaborative tools **incl. CI/CD**

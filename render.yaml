@@ -8,16 +8,19 @@ services:
     region: frankfurt
     branch: main
     autoDeploy: true
-    buildCommand: npm ci && npm run build
+    # `prisma migrate deploy` creates the schema + read-only QA views before the build,
+    # so every DB-backed route works on a fresh deploy.
+    buildCommand: npm ci && npx prisma migrate deploy && npm run build
     startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: "24"
-      # Skeleton has no DB-backed routes yet; placeholder keeps Prisma happy.
-      # Swap to Turso (TURSO_DATABASE_URL/TURSO_AUTH_TOKEN) in Sprint 1.
+      # SQLite on Render's disk. NOTE: the free tier's disk is EPHEMERAL — data resets on
+      # redeploy/restart. For persistence across deploys, provision Turso libSQL and wire the
+      # @prisma/adapter-libsql driver in lib/server/db.ts (see DESIGN.md "Deployment options").
       - key: DATABASE_URL
-        value: "file:./placeholder.db"
+        value: "file:./coinly.db"
       # Set this in the Render dashboard (Environment) — it gates /api/* on the live instance.
       - key: APP_PASSCODE
         sync: false
