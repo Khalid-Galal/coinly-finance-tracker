@@ -69,25 +69,27 @@ export default async function DashboardPage({
       {s.byCategory.length === 0 ? (
         <p>No expenses in this range.</p>
       ) : (
-        <table cellPadding={4} style={{ borderCollapse: "collapse" }}>
-          <tbody>
-            {s.byCategory.map((c) => (
-              <tr key={c.categoryId ?? "none"}>
-                <td style={{ paddingRight: 12 }}>{c.name}</td>
-                <td>
-                  <div
-                    style={{
-                      background: "#4a90d9",
-                      height: 12,
-                      width: `${maxExpense ? Math.max(2, (c.expenseMinor / maxExpense) * 240) : 2}px`,
-                    }}
-                  />
-                </td>
-                <td style={{ paddingLeft: 12, textAlign: "right" }}>{fmt(c.expenseMinor)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="table-scroll">
+          <table cellPadding={4} style={{ borderCollapse: "collapse" }}>
+            <tbody>
+              {s.byCategory.map((c) => (
+                <tr key={c.categoryId ?? "none"}>
+                  <td style={{ paddingRight: 12 }}>{c.name}</td>
+                  <td>
+                    <div
+                      style={{
+                        background: "#4a90d9",
+                        height: 12,
+                        width: `${maxExpense ? Math.max(2, (c.expenseMinor / maxExpense) * 240) : 2}px`,
+                      }}
+                    />
+                  </td>
+                  <td style={{ paddingLeft: 12, textAlign: "right" }}>{fmt(c.expenseMinor)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <h2 style={{ marginTop: 24 }}>Monthly trend (last 6 months)</h2>

@@ -57,7 +57,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | F6 | Q&A evaluation set | 4 | 5 | P2 | ☑ |
 | G6 | ≥70% test coverage | 4 | 8 | P1 | ☑ |
 | C4 | Chart drill-down | 5 | 5 | P3 | ☐ |
-| C6 | Mobile responsive | 5 | 5 | P1 | ☐ |
+| C6 | Mobile responsive | 5 | 5 | P1 | ☑ |
 | B7 | Accuracy report | 5 | 5 | P3 | ☐ |
 | F5 | Voice quick-add | 5 | 5 | P3 | ☐ |
 | G1 | First-run wizard | 5 | 5 | P1 | ☐ |

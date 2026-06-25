@@ -51,43 +51,45 @@ export function TransactionsTable({
       <p>
         <button onClick={categorizeAll}>Auto-categorize</button> {msg}
       </p>
-      <table border={1} cellPadding={6} style={{ borderCollapse: "collapse" }}>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Description</th>
-            <th>Category</th>
-            <th>Amount</th>
-            <th>Source</th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((t) => (
-            <tr key={t.id}>
-              <td>{t.date}</td>
-              <td>{t.description}</td>
-              <td>
-                <select
-                  value={t.categoryId ?? ""}
-                  disabled={busy === t.id}
-                  onChange={(e) => setCategory(t.id, e.target.value)}
-                >
-                  <option value="">{t.categoryName ?? "—"}</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td style={{ textAlign: "right" }}>
-                {(t.amountMinor / 100).toFixed(2)} {t.currency}
-              </td>
-              <td>{t.source}</td>
+      <div className="table-scroll">
+        <table border={1} cellPadding={6} style={{ borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Source</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {transactions.map((t) => (
+              <tr key={t.id}>
+                <td>{t.date}</td>
+                <td>{t.description}</td>
+                <td>
+                  <select
+                    value={t.categoryId ?? ""}
+                    disabled={busy === t.id}
+                    onChange={(e) => setCategory(t.id, e.target.value)}
+                  >
+                    <option value="">{t.categoryName ?? "—"}</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  {(t.amountMinor / 100).toFixed(2)} {t.currency}
+                </td>
+                <td>{t.source}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

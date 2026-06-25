@@ -1,0 +1,63 @@
+/* Base styles + mobile responsiveness (US-C6). The app uses inline styles per page;
+   this sets sane global defaults and the one thing inline styles can't fix well:
+   wide tables overflowing on small screens (wrap them in <div class="table-scroll">). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background: #fff;
+}
+
+a {
+  color: #06c;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+input,
+select {
+  padding: 6px 8px;
+}
+
+/* Tap-friendly controls on touch screens. */
+@media (max-width: 600px) {
+  button,
+  input,
+  select {
+    min-height: 40px;
+  }
+}
+
+img,
+table {
+  max-width: 100%;
+}
+
+/* Horizontal scroll for tables too wide for the viewport, instead of breaking the layout. */
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
