@@ -63,7 +63,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | G1 | First-run wizard | 5 | 5 | P1 | ☑ |
 | G2 | Change base currency | 5 | 3 | P1 | ☑ |
 | G3 | JSON export/import | 5 | 3 | P3 | ☐ |
-| G7 | README + design doc | 6 | 5 | P1 | ☐ |
+| G7 | README + design doc | 6 | 5 | P1 | ☑ |
 
 **Total: 183 pts.** v2 cut set if behind (~23 pts): A4, B7, C4, F5, G3 (never cut P2; C6 is required).
 

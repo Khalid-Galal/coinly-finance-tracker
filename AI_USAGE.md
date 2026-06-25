@@ -10,8 +10,14 @@ AI coding assistants were used to support development, including:
 - Drafting planning artifacts (the execution roadmap and per-sprint implementation plans aligned
   to the SRS).
 - Generating project scaffolding and boilerplate (Next.js setup, configuration, schema).
+- Pair-programming feature implementation under developer review.
 - Suggesting test cases.
-- Code review (an adversarial multi-perspective review of the foundation code).
+- Code review — adversarial multi-perspective reviews of security- and data-integrity-sensitive
+  code (e.g. the foundation, and the category-merge logic, which surfaced a silent data-loss path
+  that was then fixed and covered by tests).
+
+> The product's own AI features (Gemini-powered categorization, insights, and natural-language
+> Q&A) are application functionality, separate from this development-tooling disclosure.
 
 ## Ownership and responsibility
 

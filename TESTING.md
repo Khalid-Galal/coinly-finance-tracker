@@ -19,21 +19,40 @@ have wiped real dev data.
 
 ## Coverage
 
-Target ≥ 70% line coverage (NFR-4.1). The hard CI gate is enabled in Sprint 4 (US-G6), once
-enough surface is under test; until then coverage is reported, not gated, to avoid blocking the
-early walking-skeleton sprints.
+Target ≥ 70% (NFR-4.1). The hard CI gate is **enabled** (US-G6): `vitest` thresholds fail the
+build below 70% on lines / statements / functions / branches, scoped to the testable `lib/**`
+server logic (app routes and React components are exercised by Playwright, not unit-counted).
+Actual coverage is ~93% lines across ~120 tests.
 
-## Covered now (Sprint 0)
+## What's tested
 
-- `checkPasscode` (unit) — match / mismatch / unconfigured.
-- `accountRepository` (integration) — create + list, archived exclusion.
+Unit + integration tests cover the business logic across every feature:
+
+- **Import** — CSV parsing, BOM handling, SHA-256 dedupe, the import pipeline.
+- **Categorization** — rule matching, LLM batching/parsing (Gemini mocked), correction learning, fallbacks.
+- **Analytics** — date-range presets, summary aggregation, monthly trend (gap-filling).
+- **Budgets** — set/upsert, progress + status thresholds, month boundaries (Dec rollover).
+- **Insights** — anomaly detection, the daily cost cap, weekly/monthly generation with a fallback (Gemini mocked).
+- **Q&A** — the SQL allowlist (including adversarial subquery / CTE / UNION / PRAGMA bypass attempts), the LLM-to-SQL pipeline, and the eval harness.
+- **Categories** — create / rename / archive / merge with data-integrity guards (merge validation, child guard, duplicate-name, re-seed).
+- **Infra** — Gemini client (fetch mocked) + key rotation, exchange rates, the shared error/HTTP mapping.
+- **Repositories** — account / transaction / category / rule data access.
 - `/api/health` (Playwright E2E) — responds `{ ok: true }`.
 
-## LLM-to-SQL evaluation harness (Sprint 4)
+## LLM-to-SQL evaluation harness (US-F6)
 
-≥ 30 hand-written questions with known answers against a fixture database, run weekly in CI.
-Metrics: exact-match, tolerance-match (floats), SQL syntactic validity, allowlist pass rate, and
-end-to-end success. Dated results committed to `docs/evals/` as an honest accuracy trail.
+32 natural-language questions, each paired with a canonical **reference SQL** query (the ground
+truth). A model answer scores correct when its result reproduces the reference's answer values as
+a multiset — rewarding semantically-equivalent SQL regardless of column naming/order, with no
+hand-computed expected numbers to drift. Full methodology in [`docs/EVAL.md`](./docs/EVAL.md).
+
+- **In CI (deterministic, no network):** a "perfect model" that returns each reference query must
+  score 32/32 — proving every reference query is allowlist-valid, executes against the views, and
+  the scorer isn't vacuously passing (a deliberately-wrong model is caught).
+- **Live (`npm run eval`):** runs the set against real Gemini. Rate-limit / quota failures are
+  classified as infrastructure (excluded from the accuracy denominator) and the run requires ≥ 10
+  answered questions, so quota exhaustion can't masquerade as a pass. Measured ~94% on answered
+  questions.
 
 ## Manual test plan
 

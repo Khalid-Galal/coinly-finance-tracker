@@ -3,6 +3,23 @@
 Self-hosted personal finance tracker with AI categorization, insights, and voice Q&A.
 MSSE Capstone project — Quantic School of Business and Technology.
 
+## Features
+
+- **Data in** — import bank CSVs (generic parser; per-bank adapters pluggable) with SHA-256
+  duplicate detection, manual entry, and multiple accounts with daily exchange rates.
+- **AI categorization** — rules first, Gemini LLM fallback, learns from your corrections; only
+  merchant + amount is ever sent to the model.
+- **Dashboard** — income / expense / net summary, spending-by-category breakdown, a 6-month
+  income-vs-expense trend, and date-range presets.
+- **Budgets** — monthly per-category budgets with progress bars and approaching / over warnings.
+- **AI insights** — weekly & monthly natural-language summaries and rule-based anomaly flags,
+  under a daily cost cap that falls back to a deterministic report when reached.
+- **Natural-language Q&A** — ask in plain language or by voice. A guarded LLM-to-SQL pipeline
+  generates a read-only query, validates it against a SELECT-only allowlist, shows the SQL for
+  transparency, and is measured by a 32-question evaluation harness (`npm run eval`).
+- **Manage** — create / rename / archive / merge categories; set the base currency; a first-run
+  setup wizard for new installs.
+
 ## Links
 
 - **Live demo:** **https://coinly-kpdh.onrender.com** (Render free tier — sleeps when idle, first request cold-starts). `/api/*` is passcode-gated (`x-passcode` header); the passcode is provided to the grader. The home page and `/api/health` are public.
@@ -33,8 +50,9 @@ npm run dev                # http://localhost:3000
 | `npm run format` | Prettier check |
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm test` / `test:watch` | Vitest (unit/integration) |
-| `npm run test:coverage` | Vitest with coverage |
+| `npm run test:coverage` | Vitest with coverage (CI gate ≥ 70%) |
 | `npm run e2e` | Playwright end-to-end |
+| `npm run eval` | Live LLM-to-SQL accuracy eval vs. real Gemini (needs API keys) |
 
 ## Project layout
 

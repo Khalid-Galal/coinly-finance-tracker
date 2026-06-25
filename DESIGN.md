@@ -25,13 +25,16 @@ All monetary values are stored as integer **minor units** (no floating point).
 
 ## Layered structure
 
+The codebase is organized **feature-first** under `lib/server/` rather than by classic layer
+folders — each feature module holds its own use-case orchestration and domain rules, which keeps
+related code together and easy to hold in context.
+
 | Layer | Location |
 | --- | --- |
-| Presentation | `app/` pages + components |
-| API | `app/api/*/route.ts` (thin) + `proxy.ts` (passcode gate) |
-| Application | `lib/server/services/` |
-| Domain | `lib/server/domain/` (pure entities + rules) |
-| Infrastructure | `lib/server/repositories/` (Prisma) + `lib/server/infra/` (Gemini, rates) |
+| Presentation | `app/*/page.tsx` pages + client components |
+| API | `app/api/*/route.ts` (thin handlers) + `proxy.ts` (passcode gate) + `lib/server/errors.ts` (shared 400/404/500 mapping) |
+| Application / domain | `lib/server/<feature>/`: `categorize`, `qa`, `insights`, `budgets`, `analytics`, `import`, `categories`, `settings`, `money` (pure money math) |
+| Infrastructure | `lib/server/repositories/` (Prisma data access) · `lib/server/infra/` (Gemini client, key rotation, exchange rates) · `lib/server/db.ts` (Prisma singleton) |
 
 ## Patterns (filled in as implemented, with reasons)
 
@@ -40,8 +43,9 @@ All monetary values are stored as integer **minor units** (no floating point).
 - **Service Layer** — use-case orchestration, thin controllers. _Sprint 1+._
 - **Adapter** — per-bank CSV parsers behind one interface. _Sprint 1._
 - **Pipeline** — CSV import as parse → dedupe → normalize → categorize → persist. _Sprint 1._
-- **Guarded LLM-to-SQL** — LLM generates SQL, validated against a SELECT-only allowlist. _Sprint 4._
-- **Cost-Capped LLM client** — tracks monthly spend, short-circuits to fallbacks at the cap. _Sprint 3._
+- **Guarded LLM-to-SQL** — LLM generates SQL over read-only views, validated against a SELECT-only allowlist before execution; the SQL is surfaced to the user. _Sprint 4._
+- **Multi-key rotation** — the Gemini client rotates across configured API keys on rate-limit / transient failure, sticking to the last good key. _Sprint 2._
+- **Cost-capped AI insights** — a per-day cap on LLM insight generation (counter in the `Setting` table); at the cap it short-circuits to a deterministic, non-AI fallback so the feature still works. _Sprint 3._
 
 ## Security
 
@@ -64,3 +68,9 @@ in Sprint 4. Dependencies are scanned (`npm audit`) on every CI run.
 See `prisma/schema.prisma` (11 models: Account, Category, Transaction, CategorizationRule,
 Budget, ExchangeRate, Insight, QaHistory, AuditLog, Setting). Money in minor units; dedupe via a
 unique hash on transactions; indexes on transaction `date`, `categoryId`, `accountId`.
+
+Two **read-only SQLite views** (`v_transactions`, `v_category_totals`) expose a safe, denormalized
+projection for the guarded Q&A — the LLM may only query these (migration
+`20260625090000_qa_readonly_views`). Dates are normalized to ISO text in the views because Prisma
+stores SQLite `DateTime` as epoch-milliseconds, which would otherwise mis-compare against the
+string date filters an LLM naturally writes.
