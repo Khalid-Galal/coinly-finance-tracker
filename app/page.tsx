@@ -28,6 +28,9 @@ export default function Home() {
         <li>
           <a href="/ask">Ask Coinly</a>
         </li>
+        <li>
+          <a href="/settings">Settings</a>
+        </li>
       </ul>
       <p style={{ color: "#666", fontSize: 13 }}>
         Health: <a href="/api/health">/api/health</a>

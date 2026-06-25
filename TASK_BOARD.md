@@ -61,7 +61,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | B7 | Accuracy report | 5 | 5 | P3 | ☐ |
 | F5 | Voice quick-add | 5 | 5 | P3 | ☐ |
 | G1 | First-run wizard | 5 | 5 | P1 | ☐ |
-| G2 | Change base currency | 5 | 3 | P1 | ☐ |
+| G2 | Change base currency | 5 | 3 | P1 | ☑ |
 | G3 | JSON export/import | 5 | 3 | P3 | ☐ |
 | G7 | README + design doc | 6 | 5 | P1 | ☐ |
 

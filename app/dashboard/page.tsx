@@ -6,6 +6,7 @@ import {
 } from "@/lib/server/analytics/dateRange";
 import { summarize } from "@/lib/server/analytics/summary";
 import { monthlyTrend } from "@/lib/server/analytics/trend";
+import { getBaseCurrency } from "@/lib/server/settings/settingService";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,10 @@ export default async function DashboardPage({
     ? (raw as RangePreset)
     : "this-month";
   const now = new Date();
-  const s = await summarize(resolveRange(preset, now));
+  const [s, baseCurrency] = await Promise.all([
+    summarize(resolveRange(preset, now)),
+    getBaseCurrency(),
+  ]);
   const maxExpense = s.byCategory[0]?.expenseMinor ?? 0;
 
   const trend = await monthlyTrend(lastNMonths(6, now));
@@ -34,7 +38,8 @@ export default async function DashboardPage({
       <p>
         <a href="/transactions">Transactions</a> · <a href="/import">Import</a> ·{" "}
         <a href="/quick-add">Add</a> · <a href="/budgets">Budgets</a> ·{" "}
-        <a href="/insights">Insights</a> · <a href="/ask">Ask Coinly</a>
+        <a href="/insights">Insights</a> · <a href="/ask">Ask Coinly</a> ·{" "}
+        <a href="/settings">Settings</a>
       </p>
       <p>
         {RANGE_PRESETS.map((p) => (
@@ -52,15 +57,21 @@ export default async function DashboardPage({
         <tbody>
           <tr>
             <th style={{ textAlign: "left" }}>Income</th>
-            <td style={{ textAlign: "right" }}>{fmt(s.incomeMinor)}</td>
+            <td style={{ textAlign: "right" }}>
+              {fmt(s.incomeMinor)} {baseCurrency}
+            </td>
           </tr>
           <tr>
             <th style={{ textAlign: "left" }}>Expenses</th>
-            <td style={{ textAlign: "right" }}>{fmt(s.expenseMinor)}</td>
+            <td style={{ textAlign: "right" }}>
+              {fmt(s.expenseMinor)} {baseCurrency}
+            </td>
           </tr>
           <tr>
             <th style={{ textAlign: "left" }}>Net</th>
-            <td style={{ textAlign: "right" }}>{fmt(s.netMinor)}</td>
+            <td style={{ textAlign: "right" }}>
+              {fmt(s.netMinor)} {baseCurrency}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -128,7 +139,8 @@ export default async function DashboardPage({
       </div>
 
       <p style={{ color: "#666", fontSize: 13, marginTop: 16 }}>
-        {s.count} transactions in range. Amounts in base currency (single-currency MVP).
+        {s.count} transactions in range. Amounts shown in {baseCurrency} (your base currency — set
+        it in <a href="/settings">Settings</a>). Mixed-currency conversion is planned.
       </p>
     </main>
   );

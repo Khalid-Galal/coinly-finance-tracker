@@ -35,6 +35,7 @@ export default function BudgetsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [progress, setProgress] = useState<Progress[]>([]);
   const [msg, setMsg] = useState("");
+  const [baseCurrency, setBaseCurrency] = useState("EGP");
 
   function loadProgress(m: string) {
     fetch(`/api/budgets?month=${m}`)
@@ -46,6 +47,9 @@ export default function BudgetsPage() {
     fetch("/api/categories")
       .then((r) => r.json())
       .then((c: Category[]) => setCategories(c));
+    fetch("/api/settings")
+      .then((r) => r.json())
+      .then((d: { baseCurrency: string }) => setBaseCurrency(d.baseCurrency));
   }, []);
 
   useEffect(() => {
@@ -68,7 +72,7 @@ export default function BudgetsPage() {
         categoryId: String(f.get("categoryId")),
         month,
         amountMinor: Math.round(amount * 100),
-        currency: "EGP",
+        currency: baseCurrency,
       }),
     });
     if (res.ok) {
@@ -114,7 +118,7 @@ export default function BudgetsPage() {
           type="number"
           step="0.01"
           min="0"
-          placeholder="Amount (EGP)"
+          placeholder={`Amount (${baseCurrency})`}
           required
         />
         <button type="submit">Set budget</button>
@@ -130,7 +134,8 @@ export default function BudgetsPage() {
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <strong>{p.categoryName}</strong>
                 <span style={{ color: COLORS[p.status] }}>
-                  {egp(p.spentMinor)} / {egp(p.budgetMinor)} EGP ({Math.round(p.pct * 100)}%)
+                  {egp(p.spentMinor)} / {egp(p.budgetMinor)} {baseCurrency} (
+                  {Math.round(p.pct * 100)}%)
                 </span>
               </div>
               <div
@@ -153,7 +158,7 @@ export default function BudgetsPage() {
               <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
                 <small style={{ color: COLORS[p.status] }}>
                   {p.status === "over"
-                    ? `${LABEL.over} by ${egp(p.spentMinor - p.budgetMinor)} EGP`
+                    ? `${LABEL.over} by ${egp(p.spentMinor - p.budgetMinor)} ${baseCurrency}`
                     : LABEL[p.status]}
                 </small>
                 <button type="button" onClick={() => remove(p.id)} style={{ fontSize: 12 }}>
