@@ -60,7 +60,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | C6 | Mobile responsive | 5 | 5 | P1 | ☑ |
 | B7 | Accuracy report | 5 | 5 | P3 | ☐ |
 | F5 | Voice quick-add | 5 | 5 | P3 | ☐ |
-| G1 | First-run wizard | 5 | 5 | P1 | ☐ |
+| G1 | First-run wizard | 5 | 5 | P1 | ☑ |
 | G2 | Change base currency | 5 | 3 | P1 | ☑ |
 | G3 | JSON export/import | 5 | 3 | P3 | ☐ |
 | G7 | README + design doc | 6 | 5 | P1 | ☐ |
@@ -76,7 +76,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | 2 AI + Dashboard | 35 | ☐ |
 | 3 Insights/Budgets | 34 | ☑ Done (trend chart, budgets, AI weekly/monthly insights + anomalies + cost cap) |
 | 4 Q&A + Voice | 33 | ☑ Done (guarded LLM-to-SQL + voice + eval; ≥70% coverage gate enforced) |
-| 5 Polish | 31 | ☐ |
+| 5 Polish | 31 | ◐ P1 done (B2, C6, G1, G2); P3 set (C4, B7, F5, G3) deferred to v2 |
 | 6 Submission | 5 | ☐ |
 
 ## Definition of Done (per story)
