@@ -34,7 +34,7 @@ export default async function DashboardPage({
       <p>
         <a href="/transactions">Transactions</a> · <a href="/import">Import</a> ·{" "}
         <a href="/quick-add">Add</a> · <a href="/budgets">Budgets</a> ·{" "}
-        <a href="/ask">Ask Coinly</a>
+        <a href="/insights">Insights</a> · <a href="/ask">Ask Coinly</a>
       </p>
       <p>
         {RANGE_PRESETS.map((p) => (

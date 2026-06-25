@@ -1,5 +1,8 @@
 import { db } from "../db";
 import { summarize } from "../analytics/summary";
+import { monthRange } from "../analytics/dateRange";
+
+export { monthRange };
 
 export type BudgetStatus = "ok" | "warning" | "over";
 
@@ -12,12 +15,6 @@ export type BudgetProgress = {
   pct: number; // spent / budget; can exceed 1 when over budget
   status: BudgetStatus;
 };
-
-/** Half-open [from, to) UTC bounds for a 'YYYY-MM' month. Date.UTC rolls the year over for Dec. */
-export function monthRange(month: string): { from: Date; to: Date } {
-  const [y, m] = month.split("-").map(Number);
-  return { from: new Date(Date.UTC(y, m - 1, 1)), to: new Date(Date.UTC(y, m, 1)) };
-}
 
 // US-E3: warn before the limit, flag when reached. 80% is the conventional "approaching" line.
 function statusOf(pct: number): BudgetStatus {

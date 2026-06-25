@@ -43,10 +43,10 @@ documenting completion of **all agreed user stories** — directly serving the P
 | C5 | Date-range filter | 2 | 3 | P1 | ☑ |
 | B6 | Rules-only fallback | 3 | 3 | P1 | ☑ |
 | C3 | Monthly trend chart | 3 | 5 | P1 | ☑ |
-| D1 | Weekly AI summary | 3 | 5 | P1 | ☐ |
-| D2 | Monthly AI summary | 3 | 5 | P1 | ☐ |
-| D3 | Anomaly flags | 3 | 5 | P1 | ☐ |
-| D4 | Cost cap + tracking | 3 | 3 | P1 | ☐ |
+| D1 | Weekly AI summary | 3 | 5 | P1 | ☑ |
+| D2 | Monthly AI summary | 3 | 5 | P1 | ☑ |
+| D3 | Anomaly flags | 3 | 5 | P1 | ☑ |
+| D4 | Cost cap + tracking | 3 | 3 | P1 | ☑ |
 | E1 | Set monthly budget | 3 | 3 | P1 | ☑ |
 | E2 | Budget progress bars | 3 | 3 | P1 | ☑ |
 | E3 | Budget warnings | 3 | 2 | P1 | ☑ |
@@ -74,7 +74,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | 0 Foundation | 11 | ☑ Done (live + CI green) |
 | 1 Data | 34 | ◐ In progress (A3/A4 need CSV samples) |
 | 2 AI + Dashboard | 35 | ☐ |
-| 3 Insights/Budgets | 34 | ◐ In progress (E1/E2/E3 budgets done; C3 trend + D insights left) |
+| 3 Insights/Budgets | 34 | ☑ Done (trend chart, budgets, AI weekly/monthly insights + anomalies + cost cap) |
 | 4 Q&A + Voice | 33 | ☑ Done (guarded LLM-to-SQL + voice + eval; ≥70% coverage gate enforced) |
 | 5 Polish | 31 | ☐ |
 | 6 Submission | 5 | ☐ |
