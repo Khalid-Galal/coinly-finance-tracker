@@ -30,7 +30,8 @@ export default async function TransactionsPage() {
       <p>
         <a href="/dashboard">Dashboard</a> · <a href="/import">Import CSV</a> ·{" "}
         <a href="/quick-add">Add manually</a> · <a href="/accounts">Accounts</a> ·{" "}
-        <a href="/budgets">Budgets</a> · <a href="/ask">Ask Coinly</a>
+        <a href="/categories">Categories</a> · <a href="/budgets">Budgets</a> ·{" "}
+        <a href="/ask">Ask Coinly</a>
       </p>
       {transactions.length === 0 ? (
         <p>No transactions yet.</p>

@@ -34,7 +34,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | A7 | Multiple accounts | 1 | 5 | P1 | ☑ |
 | A8 | Daily exchange rates | 1 | 3 | P1 | ☑ |
 | B1 | Default taxonomy | 2 | 3 | P1 | ☑ |
-| B2 | Manage categories | 2 | 5 | P1 | ☐ |
+| B2 | Manage categories | 2 | 5 | P1 | ☑ |
 | B3 | AI auto-categorize | 2 | 8 | P1 | ☑ |
 | B4 | Correction learning | 2 | 5 | P1 | ☑ |
 | B5 | LLM batching | 2 | 3 | P1 | ☑ |
