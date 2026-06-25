@@ -10,6 +10,13 @@ export const RANGE_PRESETS: readonly RangePreset[] = [
 
 const startOfMonth = (year: number, month: number) => new Date(Date.UTC(year, month, 1));
 
+/** Half-open [from, to) bounds covering the last `n` whole months ending with `today`'s month. */
+export function lastNMonths(n: number, today: Date): DateRange {
+  const y = today.getUTCFullYear();
+  const m = today.getUTCMonth();
+  return { from: startOfMonth(y, m - (n - 1)), to: startOfMonth(y, m + 1) };
+}
+
 /** Resolve a named range to half-open [from, to) bounds relative to `today` (UTC). */
 export function resolveRange(preset: RangePreset, today: Date): DateRange {
   const y = today.getUTCFullYear();

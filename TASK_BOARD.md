@@ -42,7 +42,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | C2 | Category pie chart | 2 | 5 | P1 | ☑ |
 | C5 | Date-range filter | 2 | 3 | P1 | ☑ |
 | B6 | Rules-only fallback | 3 | 3 | P1 | ☑ |
-| C3 | Monthly trend chart | 3 | 5 | P1 | ☐ |
+| C3 | Monthly trend chart | 3 | 5 | P1 | ☑ |
 | D1 | Weekly AI summary | 3 | 5 | P1 | ☐ |
 | D2 | Monthly AI summary | 3 | 5 | P1 | ☐ |
 | D3 | Anomaly flags | 3 | 5 | P1 | ☐ |

@@ -1,5 +1,11 @@
-import { resolveRange, RANGE_PRESETS, type RangePreset } from "@/lib/server/analytics/dateRange";
+import {
+  resolveRange,
+  lastNMonths,
+  RANGE_PRESETS,
+  type RangePreset,
+} from "@/lib/server/analytics/dateRange";
 import { summarize } from "@/lib/server/analytics/summary";
+import { monthlyTrend } from "@/lib/server/analytics/trend";
 
 export const dynamic = "force-dynamic";
 
@@ -14,8 +20,13 @@ export default async function DashboardPage({
   const preset: RangePreset = (RANGE_PRESETS as readonly string[]).includes(raw ?? "")
     ? (raw as RangePreset)
     : "this-month";
-  const s = await summarize(resolveRange(preset, new Date()));
+  const now = new Date();
+  const s = await summarize(resolveRange(preset, now));
   const maxExpense = s.byCategory[0]?.expenseMinor ?? 0;
+
+  const trend = await monthlyTrend(lastNMonths(6, now));
+  const maxTrend = Math.max(1, ...trend.map((p) => Math.max(p.incomeMinor, p.expenseMinor)));
+  const barHeight = (minor: number) => Math.round((minor / maxTrend) * 120);
 
   return (
     <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
@@ -78,6 +89,41 @@ export default async function DashboardPage({
           </tbody>
         </table>
       )}
+
+      <h2 style={{ marginTop: 24 }}>Monthly trend (last 6 months)</h2>
+      <p style={{ fontSize: 13, color: "#555", margin: "0 0 8px" }}>
+        <span style={{ color: "#2a8a4a" }}>■</span> Income{" "}
+        <span style={{ color: "#d23535", marginLeft: 12 }}>■</span> Expenses
+      </p>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "flex-end",
+          gap: 16,
+          height: 140,
+          borderBottom: "1px solid #ccc",
+          paddingBottom: 4,
+        }}
+      >
+        {trend.map((p) => (
+          <div
+            key={p.month}
+            style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+          >
+            <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 120 }}>
+              <div
+                title={`Income ${fmt(p.incomeMinor)}`}
+                style={{ width: 12, height: barHeight(p.incomeMinor), background: "#2a8a4a" }}
+              />
+              <div
+                title={`Expenses ${fmt(p.expenseMinor)}`}
+                style={{ width: 12, height: barHeight(p.expenseMinor), background: "#d23535" }}
+              />
+            </div>
+            <small style={{ marginTop: 4, color: "#555" }}>{p.month.slice(2)}</small>
+          </div>
+        ))}
+      </div>
 
       <p style={{ color: "#666", fontSize: 13, marginTop: 16 }}>
         {s.count} transactions in range. Amounts in base currency (single-currency MVP).
