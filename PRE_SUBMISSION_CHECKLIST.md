@@ -51,6 +51,7 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 ---
 
 ## B. Presentation Rubric (scored separately — also needs a 5)
+- [ ] Follow the timed script in [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md) (≈17:30, full story coverage + fallbacks)
 - [ ] 15–20 minutes, timed ⚠️ (over/under drops the score; it's an explicit criterion)
 - [ ] Demonstrates user stories for a **range of inputs** (not one happy path)
 - [ ] App **operates correctly throughout** — rehearsed on the live deployed instance ⚠️
