@@ -41,7 +41,7 @@ related code together and easy to hold in context.
 - **Repository** — data access behind a domain interface. _Implemented Sprint 0 (`accountRepository`)._
 - **Strategy** — pluggable categorization (rules / LLM / hybrid). _Sprint 2._
 - **Service Layer** — use-case orchestration, thin controllers. _Sprint 1+._
-- **Adapter** — per-bank CSV parsers behind one interface. _Sprint 1._
+- **Adapter** — CSV parsers behind one `BankStatementParser` interface, auto-selected by header sniffing: a generic single signed-amount parser and a debit/credit two-column parser (CIB, Banque Misr, NBE), with the generic one as fallback. _Sprint 1._
 - **Pipeline** — CSV import as parse → dedupe → normalize → categorize → persist. _Sprint 1._
 - **Guarded LLM-to-SQL** — LLM generates SQL over read-only views, validated against a SELECT-only allowlist before execution; the SQL is surfaced to the user. _Sprint 4._
 - **Multi-key rotation** — the Gemini client rotates across configured API keys on rate-limit / transient failure, sticking to the last good key. _Sprint 2._

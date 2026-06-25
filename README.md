@@ -5,8 +5,9 @@ MSSE Capstone project — Quantic School of Business and Technology.
 
 ## Features
 
-- **Data in** — import bank CSVs (generic parser; per-bank adapters pluggable) with SHA-256
-  duplicate detection, manual entry, and multiple accounts with daily exchange rates.
+- **Data in** — import bank CSVs in either a single signed-amount column or separate debit/credit
+  columns (CIB, Banque Misr, NBE) with SHA-256 duplicate detection, manual entry, and multiple
+  accounts with daily exchange rates.
 - **AI categorization** — rules first, Gemini LLM fallback, learns from your corrections; only
   merchant + amount is ever sent to the model.
 - **Dashboard** — income / expense / net summary, spending-by-category breakdown, a 6-month

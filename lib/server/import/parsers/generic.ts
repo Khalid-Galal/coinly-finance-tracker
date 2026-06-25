@@ -1,29 +1,13 @@
 import Papa from "papaparse";
 import type { BankStatementParser, ParsedRow } from "../types";
+import { norm, toMinor, toIsoDate } from "./shared";
 
 const REQUIRED = ["date", "amount", "description"];
 
-const norm = (s: string): string => s.trim().toLowerCase();
-
-/** "1,234.50" | "-2000" -> integer minor units (×100, rounded). */
-function toMinor(amount: string): number {
-  const n = parseFloat(String(amount).replace(/,/g, "").trim());
-  return Number.isFinite(n) ? Math.round(n * 100) : 0;
-}
-
-/** Accept ISO (YYYY-MM-DD) or DD/MM/YYYY (Egyptian convention) -> ISO. */
-function toIsoDate(d: string): string {
-  const s = d.trim();
-  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-  const m = s.match(/^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$/);
-  if (m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`;
-  return s; // leave as-is; downstream validation catches bad dates
-}
-
 /**
- * Generic CSV parser: any export with date, amount, description columns
- * (optional currency, payee). The fallback when no bank-specific parser matches,
- * and the template for bank-specific adapters.
+ * Generic CSV parser: any export with a single signed `amount` column plus date and
+ * description (optional currency, payee). The fallback when no bank-specific parser
+ * matches, and the template for bank-specific adapters.
  */
 export const genericParser: BankStatementParser = {
   bank: "generic",

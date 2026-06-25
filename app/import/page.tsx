@@ -57,6 +57,11 @@ export default function ImportPage() {
             <input type="file" name="file" accept=".csv,text/csv" required />
           </p>
           <button type="submit">Import</button>
+          <p style={{ fontSize: 13, color: "#666", marginTop: 12 }}>
+            Supported: a single signed <code>Amount</code> column, or separate <code>Debit</code>/
+            <code>Credit</code> columns (CIB, Banque Misr, NBE). Dates as YYYY-MM-DD or DD/MM/YYYY.
+            Duplicate rows are skipped automatically.
+          </p>
         </form>
       )}
       {result && <p>{result}</p>}

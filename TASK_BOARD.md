@@ -27,8 +27,8 @@ documenting completion of **all agreed user stories** — directly serving the P
 | G4 | CI on every push | 0 | 5 | P0 | ☑ |
 | G5 | Auto-deploy to Render | 0 | 3 | P0 | ☑ |
 | A2 | Import CIB CSV | 1 | 8 | P1 | ☐ |
-| A3 | Import Banque Misr CSV | 1 | 5 | P1 | ☐ |
-| A4 | Import NBE CSV | 1 | 5 | P3 | ☐ |
+| A3 | Import Banque Misr CSV | 1 | 5 | P1 | ☑ |
+| A4 | Import NBE CSV | 1 | 5 | P3 | ☑ |
 | A5 | Duplicate detection | 1 | 3 | P1 | ☑ |
 | A6 | Manual transaction entry | 1 | 5 | P1 | ☑ |
 | A7 | Multiple accounts | 1 | 5 | P1 | ☑ |
@@ -72,7 +72,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | Sprint | Pts | Status |
 |---|:---:|---|
 | 0 Foundation | 11 | ☑ Done (live + CI green) |
-| 1 Data | 34 | ◐ In progress (A3/A4 need CSV samples) |
+| 1 Data | 34 | ☑ Done (CIB/Banque Misr/NBE via debit-credit parser; generic fallback) |
 | 2 AI + Dashboard | 35 | ☐ |
 | 3 Insights/Budgets | 34 | ☑ Done (trend chart, budgets, AI weekly/monthly insights + anomalies + cost cap) |
 | 4 Q&A + Voice | 33 | ☑ Done (guarded LLM-to-SQL + voice + eval; ≥70% coverage gate enforced) |
