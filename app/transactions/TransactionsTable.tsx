@@ -69,6 +69,7 @@ export function TransactionsTable({
                 <td>{t.description}</td>
                 <td>
                   <select
+                    aria-label={`Category for ${t.description}`}
                     value={t.categoryId ?? ""}
                     disabled={busy === t.id}
                     onChange={(e) => setCategory(t.id, e.target.value)}

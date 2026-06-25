@@ -55,9 +55,16 @@ export default function AccountsPage() {
         ))}
       </ul>
       <form onSubmit={onSubmit}>
-        <input name="name" placeholder="Account name" required />{" "}
-        <input name="type" placeholder="type" defaultValue="bank" />{" "}
-        <input name="currency" placeholder="EGP" defaultValue="EGP" maxLength={3} size={4} />{" "}
+        <input name="name" placeholder="Account name" aria-label="Account name" required />{" "}
+        <input name="type" placeholder="type" defaultValue="bank" aria-label="Account type" />{" "}
+        <input
+          name="currency"
+          placeholder="EGP"
+          defaultValue="EGP"
+          maxLength={3}
+          size={4}
+          aria-label="Currency code"
+        />{" "}
         <button type="submit">Add account</button>
       </form>
       {msg && <p>{msg}</p>}

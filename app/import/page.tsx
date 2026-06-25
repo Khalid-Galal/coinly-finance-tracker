@@ -54,7 +54,13 @@ export default function ImportPage() {
             </select>
           </label>
           <p>
-            <input type="file" name="file" accept=".csv,text/csv" required />
+            <input
+              type="file"
+              name="file"
+              accept=".csv,text/csv"
+              aria-label="CSV file to import"
+              required
+            />
           </p>
           <button type="submit">Import</button>
           <p style={{ fontSize: 13, color: "#666", marginTop: 12 }}>

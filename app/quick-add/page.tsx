@@ -69,11 +69,24 @@ export default function QuickAddPage() {
             </label>
           </p>
           <p>
-            <input type="date" name="date" required />{" "}
-            <input type="number" name="amount" step="0.01" placeholder="Amount" required />
+            <input type="date" name="date" aria-label="Date" required />{" "}
+            <input
+              type="number"
+              name="amount"
+              step="0.01"
+              placeholder="Amount"
+              aria-label="Amount"
+              required
+            />
           </p>
           <p>
-            <input name="description" placeholder="Description" required size={40} />
+            <input
+              name="description"
+              placeholder="Description"
+              aria-label="Description"
+              required
+              size={40}
+            />
           </p>
           <button type="submit">Add</button>
         </form>
