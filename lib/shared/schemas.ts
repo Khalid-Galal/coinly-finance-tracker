@@ -16,3 +16,13 @@ export const transactionInputSchema = z.object({
 });
 
 export type TransactionInput = z.infer<typeof transactionInputSchema>;
+
+/** Validated shape for setting a monthly category budget (FR-5.1). */
+export const budgetInputSchema = z.object({
+  categoryId: z.string().min(1),
+  month: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, "month must be YYYY-MM"),
+  amountMinor: z.number().int().positive(),
+  currency: z.string().length(3),
+});
+
+export type BudgetInput = z.infer<typeof budgetInputSchema>;

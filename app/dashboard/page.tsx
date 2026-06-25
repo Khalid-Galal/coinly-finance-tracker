@@ -22,7 +22,8 @@ export default async function DashboardPage({
       <h1>Dashboard</h1>
       <p>
         <a href="/transactions">Transactions</a> · <a href="/import">Import</a> ·{" "}
-        <a href="/quick-add">Add</a> · <a href="/ask">Ask Coinly</a>
+        <a href="/quick-add">Add</a> · <a href="/budgets">Budgets</a> ·{" "}
+        <a href="/ask">Ask Coinly</a>
       </p>
       <p>
         {RANGE_PRESETS.map((p) => (

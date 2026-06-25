@@ -47,9 +47,9 @@ documenting completion of **all agreed user stories** — directly serving the P
 | D2 | Monthly AI summary | 3 | 5 | P1 | ☐ |
 | D3 | Anomaly flags | 3 | 5 | P1 | ☐ |
 | D4 | Cost cap + tracking | 3 | 3 | P1 | ☐ |
-| E1 | Set monthly budget | 3 | 3 | P1 | ☐ |
-| E2 | Budget progress bars | 3 | 3 | P1 | ☐ |
-| E3 | Budget warnings | 3 | 2 | P1 | ☐ |
+| E1 | Set monthly budget | 3 | 3 | P1 | ☑ |
+| E2 | Budget progress bars | 3 | 3 | P1 | ☑ |
+| E3 | Budget warnings | 3 | 2 | P1 | ☑ |
 | F1 | Natural-language Q&A | 4 | 8 | P2 | ☑ |
 | F2 | SQL allowlist guard | 4 | 5 | P2 | ☑ |
 | F3 | Show generated SQL | 4 | 2 | P2 | ☑ |
@@ -74,7 +74,7 @@ documenting completion of **all agreed user stories** — directly serving the P
 | 0 Foundation | 11 | ☑ Done (live + CI green) |
 | 1 Data | 34 | ◐ In progress (A3/A4 need CSV samples) |
 | 2 AI + Dashboard | 35 | ☐ |
-| 3 Insights/Budgets | 34 | ☐ |
+| 3 Insights/Budgets | 34 | ◐ In progress (E1/E2/E3 budgets done; C3 trend + D insights left) |
 | 4 Q&A + Voice | 33 | ☑ Done (guarded LLM-to-SQL + voice + eval; ≥70% coverage gate enforced) |
 | 5 Polish | 31 | ☐ |
 | 6 Submission | 5 | ☐ |

@@ -20,6 +20,9 @@ export default function Home() {
           <a href="/accounts">Accounts</a>
         </li>
         <li>
+          <a href="/budgets">Budgets</a>
+        </li>
+        <li>
           <a href="/ask">Ask Coinly</a>
         </li>
       </ul>
