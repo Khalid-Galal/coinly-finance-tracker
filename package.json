@@ -17,6 +17,8 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.4",
+    "@prisma/adapter-libsql": "^6.19.3",
     "@prisma/client": "^6.19.3",
     "next": "^16.2.9",
     "node-sql-parser": "^5.4.0",

@@ -30,7 +30,7 @@ MSSE Capstone project — Quantic School of Business and Technology.
 
 ## Tech stack
 
-Next.js 16 (App Router, full-stack) · React 19 · TypeScript (strict) · Prisma + SQLite (local and deployed; Turso libSQL is an optional persistence upgrade, not yet wired) · Vitest + Playwright · ESLint 9 + Prettier · GitHub Actions · Google Gemini (AI features).
+Next.js 16 (App Router, full-stack) · React 19 · TypeScript (strict) · Prisma + SQLite (local and deployed; Turso libSQL driver adapter wired for optional persistent cloud storage — set `TURSO_DATABASE_URL` to use it) · Vitest + Playwright · ESLint 9 + Prettier · GitHub Actions · Google Gemini (AI features).
 
 ## Local setup
 
