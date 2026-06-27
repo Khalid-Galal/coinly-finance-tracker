@@ -60,8 +60,12 @@ related code together and easy to hold in context.
 
 ## Security
 
-The passcode proxy (`proxy.ts`, Next 16 convention) gates all `/api/*` routes (`/api/health` is intentionally public for
-uptime/smoke checks) and **fails closed** (503) in production if no passcode is configured.
+The passcode proxy (`proxy.ts`, Next 16 convention) gates the whole app when `APP_PASSCODE` is set:
+unauthenticated page requests are redirected to an **unlock screen** (`/unlock`) and API requests
+get 401. Entering the passcode (`POST /api/unlock`) sets an httpOnly cookie that the proxy then
+accepts — so the interactive UI works even though its client-side fetches can't attach a header.
+`/api/health` (and `/unlock`, `/api/unlock`) stay public; the gate **fails closed** (503) in
+production if no passcode is configured. (Lightweight single-user demo gate, not full auth.)
 Secrets live in environment variables only. LLM-to-SQL adds a parser-based SELECT-only allowlist
 in Sprint 4. Dependencies are scanned (`npm audit`) on every CI run.
 

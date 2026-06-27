@@ -37,7 +37,13 @@ Unit + integration tests cover the business logic across every feature:
 - **Categories** — create / rename / archive / merge with data-integrity guards (merge validation, child guard, duplicate-name, re-seed).
 - **Infra** — Gemini client (fetch mocked) + key rotation, exchange rates, the shared error/HTTP mapping.
 - **Repositories** — account / transaction / category / rule data access.
-- `/api/health` (Playwright E2E) — responds `{ ok: true }`.
+
+**End-to-end (Playwright, real Chromium against the production build):** an 11-test browser suite
+(`e2e/app.spec.ts`) drives the full user journey on the deployed-style server — the passcode
+**unlock wall**, first-run wizard, manual transaction entry, dashboard, transactions list, budgets,
+category management, settings, and the Ask page — plus a security test proving the gate redirects
+unauthenticated pages to `/unlock` and 401s the API, and the `/api/health` smoke check. The e2e
+server runs the real `next build && next start` with the gate on and a fresh migrated DB.
 
 ## LLM-to-SQL evaluation harness (US-F6)
 

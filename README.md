@@ -23,7 +23,7 @@ MSSE Capstone project — Quantic School of Business and Technology.
 
 ## Links
 
-- **Live demo:** **https://coinly-kpdh.onrender.com** (Render free tier — sleeps when idle, first request cold-starts; storage is ephemeral, so data resets on redeploy). `/api/*` is passcode-gated (`x-passcode` header); the passcode is provided to the grader. The home page and `/api/health` are public.
+- **Live demo:** **https://coinly-kpdh.onrender.com** (Render free tier — sleeps when idle, first request cold-starts; storage is ephemeral, so data resets on redeploy). The whole app is passcode-gated: visitors land on an **unlock screen**, enter the passcode (provided to the grader), and a cookie unlocks the UI. `/api/health` stays public.
 - **Task board:** [`TASK_BOARD.md`](./TASK_BOARD.md) — version-controlled mirror of the Trello Scrum board. _Trello link: TBD._
 - **Design & testing:** [`DESIGN.md`](./DESIGN.md) · [`TESTING.md`](./TESTING.md)
 - **Demo script:** [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md) — timed 15–20 min walkthrough for the recorded demonstration
