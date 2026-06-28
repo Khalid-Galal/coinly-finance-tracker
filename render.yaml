@@ -5,7 +5,7 @@ services:
   - type: web
     name: coinly
     runtime: node
-    plan: starter            # always-on (no free-tier spin-down) — required for the persistent disk
+    plan: starter # always-on (no free-tier spin-down) — required for the persistent disk
     region: frankfurt
     branch: main
     autoDeploy: true
