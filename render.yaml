@@ -1,33 +1,33 @@
 # Render Blueprint — https://render.com/docs/blueprint-spec
-# Deploys the Next.js app as a free web service. Node 24 matches the npm 11 lockfile.
+# Deploys the Next.js app as an always-on web service with a persistent disk. Node 24 matches
+# the npm 11 lockfile.
 services:
   - type: web
     name: coinly
     runtime: node
-    plan: free
+    plan: starter            # always-on (no free-tier spin-down) — required for the persistent disk
     region: frankfurt
     branch: main
     autoDeploy: true
-    # `prisma migrate deploy` creates the schema + read-only QA views before the build,
-    # so every DB-backed route works on a fresh deploy.
-    buildCommand: npm ci && npx prisma migrate deploy && npm run build
-    startCommand: npm start
+    # `prisma generate` runs on `npm ci` (postinstall). The build only compiles the app.
+    buildCommand: npm ci && npm run build
+    # `prisma migrate deploy` runs at BOOT, not build, because the persistent disk is only
+    # mounted at runtime — this creates the schema + QA views on the disk on first start.
+    startCommand: npx prisma migrate deploy && npm start
     healthCheckPath: /api/health
+    # Persistent disk: the SQLite file lives here so data survives redeploys/restarts.
+    disk:
+      name: coinly-data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
       - key: NODE_VERSION
         value: "24"
-      # SQLite on Render's disk. NOTE: the free tier's disk is EPHEMERAL — data resets on
-      # redeploy/restart. For persistence across deploys, provision Turso libSQL and wire the
-      # @prisma/adapter-libsql driver in lib/server/db.ts (see DESIGN.md "Deployment options").
+      # SQLite file on the persistent disk above — durable across deploys.
       - key: DATABASE_URL
-        value: "file:./coinly.db"
-      # Set this in the Render dashboard (Environment) — it gates /api/* on the live instance.
+        value: "file:/var/data/coinly.db"
+      # Set this in the Render dashboard (Environment) — it gates the app on the live instance.
       - key: APP_PASSCODE
         sync: false
-      # OPTIONAL persistence: set both in the Render dashboard to switch the runtime to Turso
-      # libSQL (data survives redeploys). lib/server/db.ts auto-uses the libSQL adapter when
-      # TURSO_DATABASE_URL is present. One-time: apply the schema to the Turso DB (see DESIGN.md).
-      - key: TURSO_DATABASE_URL
-        sync: false
-      - key: TURSO_AUTH_TOKEN
-        sync: false
+      # OPTIONAL: lib/server/db.ts auto-switches to hosted Turso libSQL if TURSO_DATABASE_URL is
+      # set (off-box DB instead of the disk). Not needed with the persistent disk above.
