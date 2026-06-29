@@ -6,14 +6,15 @@ export default defineConfig({
   // Stateful journey over one shared DB — run serially to avoid cross-test races.
   workers: 1,
   fullyParallel: false,
-  use: { baseURL: "http://localhost:3000" },
+  use: { baseURL: "http://localhost:3912" },
   webServer: {
-    command: "npm run build && npm start",
-    port: 3000,
+    // Group B isolation (TEST_PLAN §8.2): free port 3912, own e2e DB, own passcode.
+    // dev server (not a prod build) — proxy.ts enforces the gate whenever APP_PASSCODE is set,
+    // so the unlock wall is exercised the same way without the multi-minute build.
+    command: "npm run dev -- -p 3912",
+    port: 3912,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
-    // Production build with the passcode gate ON — the e2e exercises the real deployed behaviour
-    // (unlock wall + cookie). e2e DB is provisioned in globalSetup.
-    env: { DATABASE_URL: "file:./e2e.db", APP_PASSCODE: "e2e-pass" },
+    env: { DATABASE_URL: "file:./e2e-b.db", APP_PASSCODE: "b-pass" },
   },
 });
