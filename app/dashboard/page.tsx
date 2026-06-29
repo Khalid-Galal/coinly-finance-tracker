@@ -33,48 +33,39 @@ export default async function DashboardPage({
   const barHeight = (minor: number) => Math.round((minor / maxTrend) * 120);
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
+    <main>
       <h1>Dashboard</h1>
-      <p>
-        <a href="/transactions">Transactions</a> · <a href="/import">Import</a> ·{" "}
-        <a href="/quick-add">Add</a> · <a href="/budgets">Budgets</a> ·{" "}
-        <a href="/insights">Insights</a> · <a href="/ask">Ask Coinly</a> ·{" "}
-        <a href="/settings">Settings</a>
-      </p>
-      <p>
+      <p className="muted">Your money at a glance — income, spending, and trends.</p>
+      <ul className="pills">
         {RANGE_PRESETS.map((p) => (
-          <a
-            key={p}
-            href={`/dashboard?range=${p}`}
-            style={{ marginRight: 12, fontWeight: p === preset ? 700 : 400 }}
-          >
-            {p}
-          </a>
+          <li key={p}>
+            <a href={`/dashboard?range=${p}`} className={`pill${p === preset ? " active" : ""}`}>
+              {p}
+            </a>
+          </li>
         ))}
-      </p>
+      </ul>
 
-      <table border={1} cellPadding={8} style={{ borderCollapse: "collapse" }}>
-        <tbody>
-          <tr>
-            <th style={{ textAlign: "left" }}>Income</th>
-            <td style={{ textAlign: "right" }}>
-              {fmt(s.incomeMinor)} {baseCurrency}
-            </td>
-          </tr>
-          <tr>
-            <th style={{ textAlign: "left" }}>Expenses</th>
-            <td style={{ textAlign: "right" }}>
-              {fmt(s.expenseMinor)} {baseCurrency}
-            </td>
-          </tr>
-          <tr>
-            <th style={{ textAlign: "left" }}>Net</th>
-            <td style={{ textAlign: "right" }}>
-              {fmt(s.netMinor)} {baseCurrency}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div className="stat-grid">
+        <div className="stat stat--income">
+          <div className="label">Income</div>
+          <div className="value">
+            {fmt(s.incomeMinor)} {baseCurrency}
+          </div>
+        </div>
+        <div className="stat stat--expense">
+          <div className="label">Expenses</div>
+          <div className="value">
+            {fmt(s.expenseMinor)} {baseCurrency}
+          </div>
+        </div>
+        <div className="stat">
+          <div className="label">Net</div>
+          <div className="value">
+            {fmt(s.netMinor)} {baseCurrency}
+          </div>
+        </div>
+      </div>
 
       <h2 style={{ marginTop: 24 }}>Spending by category</h2>
       {s.byCategory.length === 0 ? (
@@ -89,8 +80,9 @@ export default async function DashboardPage({
                   <td>
                     <div
                       style={{
-                        background: "#4a90d9",
+                        background: "var(--brand)",
                         height: 12,
+                        borderRadius: 3,
                         width: `${maxExpense ? Math.max(2, (c.expenseMinor / maxExpense) * 240) : 2}px`,
                       }}
                     />

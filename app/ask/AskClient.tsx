@@ -97,7 +97,7 @@ export function AskClient() {
           style={{ flex: 1, padding: 8 }}
           aria-label="Question"
         />
-        <button type="submit" disabled={busy}>
+        <button type="submit" className="btn-primary" disabled={busy}>
           {busy ? "Asking…" : "Ask"}
         </button>
         <button

@@ -29,25 +29,27 @@ export default function UnlockPage() {
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif", maxWidth: 360 }}>
-      <h1>Coinly</h1>
-      <p>This demo is passcode-protected. Enter the passcode to continue.</p>
-      <form onSubmit={submit} style={{ display: "flex", gap: 8 }}>
-        <input
-          type="password"
-          value={passcode}
-          onChange={(e) => setPasscode(e.target.value)}
-          aria-label="Passcode"
-          placeholder="Passcode"
-          autoFocus
-        />
-        <button type="submit" disabled={busy || !passcode}>
-          {busy ? "…" : "Unlock"}
-        </button>
-      </form>
-      <p role="status" aria-live="polite" style={{ color: "#b00", minHeight: "1.2em" }}>
-        {msg}
-      </p>
+    <main style={{ maxWidth: 360 }}>
+      <div className="card">
+        <h1>Coinly</h1>
+        <p>This demo is passcode-protected. Enter the passcode to continue.</p>
+        <form onSubmit={submit} style={{ display: "flex", gap: 8 }}>
+          <input
+            type="password"
+            value={passcode}
+            onChange={(e) => setPasscode(e.target.value)}
+            aria-label="Passcode"
+            placeholder="Passcode"
+            autoFocus
+          />
+          <button type="submit" className="btn-primary" disabled={busy || !passcode}>
+            {busy ? "…" : "Unlock"}
+          </button>
+        </form>
+        <p role="status" aria-live="polite" style={{ color: "#b00", minHeight: "1.2em" }}>
+          {msg}
+        </p>
+      </div>
     </main>
   );
 }

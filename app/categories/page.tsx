@@ -106,13 +106,10 @@ export default function CategoriesPage() {
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif", maxWidth: 560 }}>
+    <main style={{ maxWidth: 560 }}>
       <h1>Manage categories</h1>
-      <p>
-        <a href="/transactions">← Transactions</a> · <a href="/dashboard">Dashboard</a>
-      </p>
 
-      <form onSubmit={create} style={{ marginBottom: 16 }}>
+      <form onSubmit={create} className="card" style={{ marginBottom: 16 }}>
         <label>
           New category:{" "}
           <input
@@ -122,7 +119,7 @@ export default function CategoriesPage() {
             maxLength={100}
           />
         </label>{" "}
-        <button type="submit" disabled={busy || !newName.trim()}>
+        <button type="submit" className="btn-primary" disabled={busy || !newName.trim()}>
           Add
         </button>
       </form>

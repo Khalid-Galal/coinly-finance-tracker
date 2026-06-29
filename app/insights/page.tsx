@@ -42,12 +42,8 @@ export default function InsightsPage() {
   const capped = data ? data.usage.remaining === 0 : false;
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif", maxWidth: 680 }}>
+    <main style={{ maxWidth: 680 }}>
       <h1>Insights</h1>
-      <p>
-        <a href="/dashboard">Dashboard</a> · <a href="/budgets">Budgets</a> ·{" "}
-        <a href="/transactions">Transactions</a>
-      </p>
 
       <p>
         <button onClick={() => generate("weekly")} disabled={!!busy}>

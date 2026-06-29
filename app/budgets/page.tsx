@@ -90,39 +90,39 @@ export default function BudgetsPage() {
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif", maxWidth: 640 }}>
+    <main style={{ maxWidth: 640 }}>
       <h1>Budgets</h1>
-      <p>
-        <a href="/dashboard">Dashboard</a> · <a href="/transactions">Transactions</a>
-      </p>
-
       <p>
         <label>
           Month: <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
         </label>
       </p>
 
-      <form onSubmit={onSubmit} style={{ display: "flex", gap: 8, alignItems: "center" }}>
-        <select name="categoryId" defaultValue="" required>
-          <option value="" disabled>
-            Category…
-          </option>
-          {categories.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.name}
+      <div className="card">
+        <form onSubmit={onSubmit} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <select name="categoryId" defaultValue="" required>
+            <option value="" disabled>
+              Category…
             </option>
-          ))}
-        </select>
-        <input
-          name="amount"
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder={`Amount (${baseCurrency})`}
-          required
-        />
-        <button type="submit">Set budget</button>
-      </form>
+            {categories.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+          <input
+            name="amount"
+            type="number"
+            step="0.01"
+            min="0"
+            placeholder={`Amount (${baseCurrency})`}
+            required
+          />
+          <button type="submit" className="btn-primary">
+            Set budget
+          </button>
+        </form>
+      </div>
       {msg && <p style={{ color: "#555" }}>{msg}</p>}
 
       {progress.length === 0 ? (

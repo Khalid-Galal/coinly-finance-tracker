@@ -42,11 +42,8 @@ export default function AccountsPage() {
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
+    <main>
       <h1>Accounts</h1>
-      <p>
-        <a href="/transactions">← Transactions</a>
-      </p>
       <ul>
         {accounts.map((a) => (
           <li key={a.id}>
@@ -54,19 +51,23 @@ export default function AccountsPage() {
           </li>
         ))}
       </ul>
-      <form onSubmit={onSubmit}>
-        <input name="name" placeholder="Account name" aria-label="Account name" required />{" "}
-        <input name="type" placeholder="type" defaultValue="bank" aria-label="Account type" />{" "}
-        <input
-          name="currency"
-          placeholder="EGP"
-          defaultValue="EGP"
-          maxLength={3}
-          size={4}
-          aria-label="Currency code"
-        />{" "}
-        <button type="submit">Add account</button>
-      </form>
+      <div className="card">
+        <form onSubmit={onSubmit}>
+          <input name="name" placeholder="Account name" aria-label="Account name" required />{" "}
+          <input name="type" placeholder="type" defaultValue="bank" aria-label="Account type" />{" "}
+          <input
+            name="currency"
+            placeholder="EGP"
+            defaultValue="EGP"
+            maxLength={3}
+            size={4}
+            aria-label="Currency code"
+          />{" "}
+          <button type="submit" className="btn-primary">
+            Add account
+          </button>
+        </form>
+      </div>
       {msg && <p>{msg}</p>}
     </main>
   );

@@ -25,13 +25,11 @@ export default async function TransactionsPage() {
   }));
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
+    <main>
       <h1>Transactions</h1>
-      <p>
-        <a href="/dashboard">Dashboard</a> · <a href="/import">Import CSV</a> ·{" "}
-        <a href="/quick-add">Add manually</a> · <a href="/accounts">Accounts</a> ·{" "}
-        <a href="/categories">Categories</a> · <a href="/budgets">Budgets</a> ·{" "}
-        <a href="/ask">Ask Coinly</a>
+      <p className="muted">
+        <a href="/import">Import CSV</a> · <a href="/quick-add">Add manually</a> ·{" "}
+        <a href="/accounts">Accounts</a>
       </p>
       {transactions.length === 0 ? (
         <p>No transactions yet.</p>

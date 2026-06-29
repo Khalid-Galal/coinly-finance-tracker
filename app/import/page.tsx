@@ -32,43 +32,44 @@ export default function ImportPage() {
   }
 
   return (
-    <main style={{ padding: 24, fontFamily: "system-ui, sans-serif" }}>
+    <main>
       <h1>Import CSV</h1>
-      <p>
-        <a href="/transactions">← Transactions</a>
-      </p>
       {accounts.length === 0 ? (
         <p>
           No accounts yet. <a href="/accounts">Create one first.</a>
         </p>
       ) : (
-        <form onSubmit={onSubmit}>
-          <label>
-            Account:{" "}
-            <select value={accountId} onChange={(e) => setAccountId(e.target.value)}>
-              {accounts.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <p>
-            <input
-              type="file"
-              name="file"
-              accept=".csv,text/csv"
-              aria-label="CSV file to import"
-              required
-            />
-          </p>
-          <button type="submit">Import</button>
-          <p style={{ fontSize: 13, color: "#666", marginTop: 12 }}>
-            Supported: a single signed <code>Amount</code> column, or separate <code>Debit</code>/
-            <code>Credit</code> columns (CIB, Banque Misr, NBE). Dates as YYYY-MM-DD or DD/MM/YYYY.
-            Duplicate rows are skipped automatically.
-          </p>
-        </form>
+        <div className="card">
+          <form onSubmit={onSubmit}>
+            <label>
+              Account:{" "}
+              <select value={accountId} onChange={(e) => setAccountId(e.target.value)}>
+                {accounts.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p>
+              <input
+                type="file"
+                name="file"
+                accept=".csv,text/csv"
+                aria-label="CSV file to import"
+                required
+              />
+            </p>
+            <button type="submit" className="btn-primary">
+              Import
+            </button>
+            <p style={{ fontSize: 13, color: "#666", marginTop: 12 }}>
+              Supported: a single signed <code>Amount</code> column, or separate <code>Debit</code>/
+              <code>Credit</code> columns (CIB, Banque Misr, NBE). Dates as YYYY-MM-DD or
+              DD/MM/YYYY. Duplicate rows are skipped automatically.
+            </p>
+          </form>
+        </div>
       )}
       {result && <p>{result}</p>}
     </main>
