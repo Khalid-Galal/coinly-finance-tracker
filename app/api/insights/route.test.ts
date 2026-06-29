@@ -68,12 +68,14 @@ describe("POST /api/insights", () => {
     expect(await db.insight.count()).toBe(1);
   });
 
-  it("throws on a malformed JSON body (req.json is unguarded -> surfaces as 500)", async () => {
+  it("400 on a malformed JSON body (parseJson -> ValidationError)", async () => {
     const req = new Request("http://t/api/insights", {
       method: "POST",
       body: "{bad",
       headers: { "content-type": "application/json" },
     });
-    await expect(POST(req)).rejects.toThrow();
+    const r = await POST(req);
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toMatch(/invalid JSON/);
   });
 });

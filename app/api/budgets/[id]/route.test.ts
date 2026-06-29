@@ -2,8 +2,8 @@ import { describe, it, expect } from "vitest";
 import { db } from "@/lib/server/db";
 import { DELETE } from "./route";
 
-// TEST_PLAN §3 Budgets DELETE. This route uses its own try/catch (not apiError), so even a
-// P2025 not-found surfaces as 500 rather than 404 — asserted below as a documented sharp edge.
+// TEST_PLAN §3 Budgets DELETE. The route routes errors through apiError, so an unknown id
+// (Prisma P2025) maps to 404.
 const ctx = (id: string) => ({ params: Promise.resolve({ id }) });
 
 describe("DELETE /api/budgets/[id]", () => {
@@ -18,8 +18,8 @@ describe("DELETE /api/budgets/[id]", () => {
     expect(await db.budget.count()).toBe(0);
   });
 
-  it("500 (not 404) for an unknown id — Prisma P2025 is caught generically", async () => {
+  it("404 for an unknown id — Prisma P2025 mapped via apiError", async () => {
     const r = await DELETE(new Request("http://t"), ctx("nope"));
-    expect(r.status).toBe(500);
+    expect(r.status).toBe(404);
   });
 });

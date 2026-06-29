@@ -81,19 +81,21 @@ describe("POST /api/budgets", () => {
     for (const b of bad) expect((await POST(postReq(b))).status).toBe(400);
   });
 
-  it("500 when categoryId references a non-existent category (FK, not 404)", async () => {
+  it("400 when categoryId references a non-existent category (FK P2003 -> apiError)", async () => {
     const r = await POST(
       postReq({ categoryId: "ghost", month: "2026-05", amountMinor: 100, currency: "EGP" }),
     );
-    expect(r.status).toBe(500);
+    expect(r.status).toBe(400);
   });
 
-  it("throws on a malformed JSON body — req.json() is awaited before the try (surfaces as 500)", async () => {
+  it("400 on a malformed JSON body (parseJson -> ValidationError)", async () => {
     const req = new Request("http://t/api/budgets", {
       method: "POST",
       body: "{bad",
       headers: { "content-type": "application/json" },
     });
-    await expect(POST(req)).rejects.toThrow();
+    const r = await POST(req);
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toMatch(/invalid JSON/);
   });
 });

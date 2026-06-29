@@ -11,11 +11,11 @@ afterEach(() => {
 });
 
 describe("costGuard — cap env parsing", () => {
-  it("falls back to the default cap when INSIGHT_DAILY_LLM_CAP=0 (0 is not > 0)", async () => {
-    // Sharp edge: 0 does NOT force offline mode — dailyCap() treats it as invalid and uses the
-    // default 20. To force the deterministic fallback you must exhaust a positive cap instead.
+  it("honours an explicit 0 cap (forces offline/fallback mode)", async () => {
     process.env.INSIGHT_DAILY_LLM_CAP = "0";
-    expect((await getLlmUsage(NOW)).cap).toBe(DEFAULT_CAP);
+    const u = await getLlmUsage(NOW);
+    expect(u.cap).toBe(0);
+    expect(u.remaining).toBe(0); // remaining 0 -> generateInsight uses the deterministic fallback
   });
 
   it("falls back to the default cap for non-numeric, empty, and negative values", async () => {

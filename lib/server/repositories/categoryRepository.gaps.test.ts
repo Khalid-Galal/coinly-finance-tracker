@@ -3,8 +3,8 @@ import { db } from "../db";
 import { categoryRepository } from "./categoryRepository";
 
 // Incremental coverage over categoryRepository.test.ts — only the TEST_PLAN §5 Categories gaps
-// that file doesn't already assert: color/icon passthrough, list() sort order, the no-guard
-// archived rename, and rename of an unknown id (P2025).
+// that file doesn't already assert: color/icon passthrough, list() sort order, the archived-rename
+// guard, and rename of an unknown id (P2025).
 
 describe("categoryRepository.create — passthrough", () => {
   it("persists color and icon", async () => {
@@ -23,11 +23,9 @@ describe("categoryRepository.list — ordering", () => {
 });
 
 describe("categoryRepository.rename", () => {
-  it("renames an archived category without a guard (documents the sharp edge)", async () => {
+  it("rejects renaming an archived category (guarded)", async () => {
     const c = await db.category.create({ data: { name: "Old", archivedAt: new Date() } });
-    const renamed = await categoryRepository.rename(c.id, "New");
-    expect(renamed.name).toBe("New");
-    expect(renamed.archivedAt).toBeTruthy(); // still archived, just renamed — no guard
+    await expect(categoryRepository.rename(c.id, "New")).rejects.toThrow(/archived/);
   });
 
   it("throws P2025 for an unknown id", async () => {

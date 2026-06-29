@@ -5,8 +5,12 @@ import { db } from "../db";
 const DEFAULT_DAILY_CAP = 20;
 
 function dailyCap(): number {
-  const n = Number(process.env.INSIGHT_DAILY_LLM_CAP);
-  return Number.isFinite(n) && n > 0 ? n : DEFAULT_DAILY_CAP;
+  // Unset/empty/whitespace -> default. An explicit 0 is honoured (forces offline/fallback mode);
+  // negative or non-numeric values are invalid and fall back to the default.
+  const raw = process.env.INSIGHT_DAILY_LLM_CAP?.trim();
+  if (!raw) return DEFAULT_DAILY_CAP;
+  const n = Number(raw);
+  return Number.isFinite(n) && n >= 0 ? n : DEFAULT_DAILY_CAP;
 }
 
 const dayKey = (now: Date) => `insight_llm_calls:${now.toISOString().slice(0, 10)}`;

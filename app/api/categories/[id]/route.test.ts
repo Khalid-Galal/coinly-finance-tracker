@@ -35,11 +35,11 @@ describe("PATCH /api/categories/[id]", () => {
     expect((await PATCH(patchReq({ name: "X" }), ctx("ghost"))).status).toBe(404);
   });
 
-  it("renames an archived category without complaint (no guard) — documents the sharp edge", async () => {
+  it("400 when renaming an archived category (guarded)", async () => {
     const c = await db.category.create({ data: { name: "Old", archivedAt: new Date() } });
     const r = await PATCH(patchReq({ name: "Renamed" }), ctx(c.id));
-    expect(r.status).toBe(200);
-    expect((await r.json()).name).toBe("Renamed");
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toMatch(/archived/);
   });
 });
 

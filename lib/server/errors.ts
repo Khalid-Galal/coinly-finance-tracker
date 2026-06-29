@@ -6,8 +6,13 @@ export class ValidationError extends Error {}
 /** Map a thrown error to a safe Response: 400 validation, 404 not-found, else 500 (logged). */
 export function apiError(e: unknown): Response {
   if (e instanceof ValidationError) return Response.json({ error: e.message }, { status: 400 });
-  if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2025") {
-    return Response.json({ error: "not found" }, { status: 404 });
+  if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    if (e.code === "P2025") return Response.json({ error: "not found" }, { status: 404 });
+    // Foreign-key violation from a bad client-supplied reference (e.g. unknown categoryId) — a
+    // client error, not an internal fault. Map to 400 without leaking schema details.
+    if (e.code === "P2003") {
+      return Response.json({ error: "referenced record does not exist" }, { status: 400 });
+    }
   }
   console.error(e);
   return Response.json({ error: "request failed" }, { status: 500 });
