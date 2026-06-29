@@ -88,13 +88,14 @@ describe("applyCorrection", () => {
     });
   });
 
-  it("creates a DUPLICATE rule when the same merchant is corrected twice", async () => {
-    const c = await category("Dining Out");
-    await applyCorrection("Costa", c.id);
-    await applyCorrection("Costa", c.id);
-    // BUG: no upsert/dedupe; correcting the same merchant twice yields two identical
-    // merchant_exact rules instead of updating the existing one.
-    expect(await db.categorizationRule.count()).toBe(2);
+  it("upserts instead of duplicating when the same merchant is corrected again", async () => {
+    const a = await category("Dining Out");
+    const b = await category("Groceries");
+    await applyCorrection("Costa", a.id);
+    await applyCorrection("Costa", b.id); // same merchant, corrected to a new category
+    const rules = await db.categorizationRule.findMany({ where: { matchType: "merchant_exact" } });
+    expect(rules).toHaveLength(1); // no duplicate rule
+    expect(rules[0].categoryId).toBe(b.id); // latest correction wins
   });
 });
 

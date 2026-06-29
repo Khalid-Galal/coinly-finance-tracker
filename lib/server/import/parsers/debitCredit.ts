@@ -44,7 +44,8 @@ export const debitCreditParser: BankStatementParser = {
   // Claims any export that has a date column AND both a debit and a credit column. This is
   // complementary to the generic parser, which requires a single `amount` column.
   canParse(headerLine: string): boolean {
-    const cols = headerLine.split(",").map(norm);
+    // Parse with Papa (not split(",")) so quoted header field names are unquoted before matching.
+    const cols = (Papa.parse<string[]>(headerLine).data[0] ?? []).map(norm);
     return (
       hasColumn(cols, ALIASES.date) &&
       hasColumn(cols, ALIASES.debit) &&

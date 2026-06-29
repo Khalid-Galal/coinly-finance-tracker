@@ -40,13 +40,14 @@ describe("POST /api/accounts", () => {
     expect(r.status).toBe(400);
   });
 
-  it("throws on malformed JSON body", async () => {
+  it("returns 400 (not a throw/500) on a malformed JSON body", async () => {
     const req = new Request("http://t/api/accounts", {
       method: "POST",
       body: "{bad",
       headers: { "content-type": "application/json" },
     });
-    // BUG: handler awaits req.json() with no try/catch => unhandled throw (Next would 500); no graceful 400.
-    await expect(POST(req)).rejects.toThrow();
+    const r = await POST(req);
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toBe("invalid JSON body");
   });
 });

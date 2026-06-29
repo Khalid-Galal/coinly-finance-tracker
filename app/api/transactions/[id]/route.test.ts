@@ -71,16 +71,14 @@ describe("PATCH /api/transactions/[id]", () => {
     expect((await r.json()).error).toBe("not found");
   });
 
-  it("throws when categoryId references a non-existent category", async () => {
+  it("returns 400 when categoryId references a non-existent category (FK)", async () => {
     const account = await seedAccount();
     const tx = await seedTransaction(account.id);
 
-    // BUG: FK violation on update is unhandled — bubbles up as an unhandled rejection (=> 500),
-    // instead of a validated 400/404. The schema accepts any non-empty string for categoryId.
-    await expect(
-      PATCH(patchReq(tx.id, { categoryId: "does-not-exist" }), {
-        params: Promise.resolve({ id: tx.id }),
-      }),
-    ).rejects.toThrow();
+    const r = await PATCH(patchReq(tx.id, { categoryId: "does-not-exist" }), {
+      params: Promise.resolve({ id: tx.id }),
+    });
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toMatch(/category/i);
   });
 });

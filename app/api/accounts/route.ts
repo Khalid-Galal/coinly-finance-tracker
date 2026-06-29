@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { accountRepository } from "@/lib/server/repositories/accountRepository";
+import { apiError, parseJson } from "@/lib/server/errors";
 
 export async function GET() {
   return Response.json(await accountRepository.list());
@@ -13,9 +14,13 @@ const createSchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const parsed = createSchema.safeParse(await req.json());
-  if (!parsed.success) {
-    return Response.json({ error: parsed.error.issues }, { status: 400 });
+  try {
+    const parsed = createSchema.safeParse(await parseJson(req));
+    if (!parsed.success) {
+      return Response.json({ error: parsed.error.issues }, { status: 400 });
+    }
+    return Response.json(await accountRepository.create(parsed.data), { status: 201 });
+  } catch (e) {
+    return apiError(e); // malformed JSON -> 400; anything else -> safe 500 (no leak)
   }
-  return Response.json(await accountRepository.create(parsed.data), { status: 201 });
 }

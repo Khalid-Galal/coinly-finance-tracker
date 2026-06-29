@@ -13,7 +13,10 @@ export const genericParser: BankStatementParser = {
   bank: "generic",
 
   canParse(headerLine: string): boolean {
-    const cols = headerLine.split(",").map(norm);
+    // Parse the header with Papa (not split(",")) so quoted field names — e.g. an
+    // Excel/bank export of `"date","amount","description"` — have their quotes stripped
+    // and still match the required columns.
+    const cols = (Papa.parse<string[]>(headerLine).data[0] ?? []).map(norm);
     return REQUIRED.every((r) => cols.includes(r));
   },
 

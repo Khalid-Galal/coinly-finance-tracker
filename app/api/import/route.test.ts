@@ -52,17 +52,16 @@ describe("POST /api/import", () => {
     expect((await r.json()).error).toMatch(/unsupported/i);
   });
 
-  it("returns 400 (not 500) when the accountId is a non-existent id", async () => {
+  it("returns a safe 400 (no schema leak) when the accountId does not exist", async () => {
     const fd = new FormData();
     fd.append("file", new File([csv], "x.csv", { type: "text/csv" }));
     fd.append("accountId", "nope");
 
     const r = await POST(importRequest(fd));
-    // The route catches the Prisma FK throw and returns 400 with the raw message.
     expect(r.status).toBe(400);
     const body = await r.json();
-    expect(typeof body.error).toBe("string");
-    expect(body.error.length).toBeGreaterThan(0);
-    // BUG: the raw Prisma FK error message is returned verbatim, leaking schema details to the client.
+    expect(body.error).toBe("import failed: invalid account or data");
+    // The raw Prisma FK message (which names tables/columns) must not leak to the client.
+    expect(body.error).not.toMatch(/prisma|foreign key|constraint|transaction_/i);
   });
 });

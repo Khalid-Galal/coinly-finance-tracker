@@ -97,12 +97,21 @@ export async function categorizeUncategorized(): Promise<{ categorized: number; 
 
 /** Learn from a user correction: a merchant_exact rule so future identical merchants skip the LLM (FR-2.6). */
 export async function applyCorrection(description: string, categoryId: string): Promise<void> {
+  const pattern = description.toLowerCase().trim();
+  // Upsert by (matchType, pattern): re-correcting the same merchant repoints the existing rule to
+  // the latest category instead of creating a duplicate (which, with first-match-wins, would have
+  // shadowed the newer correction).
+  const existing = await db.categorizationRule.findFirst({
+    where: { matchType: "merchant_exact", pattern },
+  });
+  if (existing) {
+    await db.categorizationRule.update({
+      where: { id: existing.id },
+      data: { categoryId, createdFromCorrection: true },
+    });
+    return;
+  }
   await db.categorizationRule.create({
-    data: {
-      matchType: "merchant_exact",
-      pattern: description.toLowerCase().trim(),
-      categoryId,
-      createdFromCorrection: true,
-    },
+    data: { matchType: "merchant_exact", pattern, categoryId, createdFromCorrection: true },
   });
 }

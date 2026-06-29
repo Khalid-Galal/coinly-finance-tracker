@@ -90,7 +90,7 @@ describe("POST /api/transactions", () => {
     expect(r.status).toBe(400);
   });
 
-  it("rejects (throws) when accountId references a non-existent account", async () => {
+  it("returns 400 when accountId references a non-existent account (FK)", async () => {
     const req = postReq({
       accountId: "does-not-exist",
       date: "2026-01-15",
@@ -98,16 +98,16 @@ describe("POST /api/transactions", () => {
       currency: "EGP",
       description: "X",
     });
-    // BUG: the FK violation from db.transaction.create is unguarded in POST,
-    // so it bubbles up (would surface as a 500) instead of a clean 400/404.
-    await expect(POST(req)).rejects.toThrow();
+    const r = await POST(req);
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toMatch(/account/i);
   });
 
-  it("rejects (throws) on a malformed JSON body", async () => {
+  it("returns 400 on a malformed JSON body", async () => {
     const req = new Request("http://t/api/transactions", { method: "POST", body: "{bad" });
-    // BUG: await req.json() is not wrapped in try/catch, so the parse error
-    // bubbles up (would surface as a 500) instead of a clean 400.
-    await expect(POST(req)).rejects.toThrow();
+    const r = await POST(req);
+    expect(r.status).toBe(400);
+    expect((await r.json()).error).toBe("invalid JSON body");
   });
 });
 

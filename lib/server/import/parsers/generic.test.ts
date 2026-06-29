@@ -47,9 +47,14 @@ describe("genericParser", () => {
     expect(rows[0].date).toBe("garbage");
   });
 
-  it("rejects a header whose quoted field contains a comma", () => {
-    // BUG: canParse uses naive split(","), so a quoted comma in the header splits
-    // the "amount" column ('"amount' + 'note"') and a valid file is wrongly rejected.
+  it("accepts a header whose field names are quoted (Excel/bank export style)", () => {
+    // Papa strips the quotes, so '"date","amount","description"' matches the required columns.
+    expect(genericParser.canParse('"date","amount","description"')).toBe(true);
+  });
+
+  it("does not treat a quoted-comma field name as the bare 'amount' column", () => {
+    // The middle column is literally named "amount,note" (a quoted comma), not "amount",
+    // so it is correctly NOT recognized as the required amount column.
     expect(genericParser.canParse('date,"amount,note",description')).toBe(false);
   });
 });
