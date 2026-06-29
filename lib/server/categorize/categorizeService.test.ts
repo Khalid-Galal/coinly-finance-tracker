@@ -40,6 +40,38 @@ describe("categorizeBatch", () => {
     const out = await categorizeBatch([{ description: "Mystery", amountMinor: -100 }]);
     expect(out[0]).toMatchObject({ categoryId: null, via: "none" });
   });
+
+  it("chunks the LLM by 20: 21 unmatched txs -> 2 batch calls", async () => {
+    // No rules seeded, so all 21 queue for the LLM; LLM_BATCH=20 => one chunk of 20 + one of 1.
+    vi.mocked(llmCategorizeBatch).mockResolvedValue([]);
+    const txs = Array.from({ length: 21 }, (_, i) => ({
+      description: "tx" + i,
+      amountMinor: -100,
+    }));
+    await categorizeBatch(txs);
+    expect(llmCategorizeBatch).toHaveBeenCalledTimes(2);
+  });
+
+  it("does not assign an archived category the LLM returns", async () => {
+    const old = await category("Old Category");
+    await db.category.update({ where: { id: old.id }, data: { archivedAt: new Date() } });
+    // categorizeBatch only considers categories where archivedAt is null, so an archived
+    // name from the LLM has no live id and the tx stays uncategorized.
+    vi.mocked(llmCategorizeBatch).mockResolvedValue([
+      { category: "Old Category", confidence: 0.9 },
+    ]);
+    const out = await categorizeBatch([{ description: "X", amountMinor: -100 }]);
+    expect(out[0]).toMatchObject({ categoryId: null, via: "none" });
+  });
+
+  it("assigns a real category literally named 'Uncategorized' (it is a normal leaf)", async () => {
+    const uncat = await category("Uncategorized");
+    vi.mocked(llmCategorizeBatch).mockResolvedValue([
+      { category: "Uncategorized", confidence: 0.5 },
+    ]);
+    const out = await categorizeBatch([{ description: "X", amountMinor: -100 }]);
+    expect(out[0]).toMatchObject({ categoryId: uncat.id, via: "llm" });
+  });
 });
 
 describe("applyCorrection", () => {
@@ -54,6 +86,15 @@ describe("applyCorrection", () => {
       categoryId: c.id,
       createdFromCorrection: true,
     });
+  });
+
+  it("creates a DUPLICATE rule when the same merchant is corrected twice", async () => {
+    const c = await category("Dining Out");
+    await applyCorrection("Costa", c.id);
+    await applyCorrection("Costa", c.id);
+    // BUG: no upsert/dedupe; correcting the same merchant twice yields two identical
+    // merchant_exact rules instead of updating the existing one.
+    expect(await db.categorizationRule.count()).toBe(2);
   });
 });
 
@@ -81,5 +122,25 @@ describe("categorizeUncategorized", () => {
     const groceries = await db.category.findFirst({ where: { name: "Groceries" } });
     expect(tx?.categoryId).toBe(groceries?.id);
     expect(tx?.aiConfidence).toBe(0.9);
+  });
+
+  it("caps a single run at 200 transactions (MAX_PER_RUN)", async () => {
+    const acc = await db.account.create({
+      data: { name: "Big", type: "bank", currency: "EGP", openingBalanceMinor: 0 },
+    });
+    await db.transaction.createMany({
+      data: Array.from({ length: 201 }, (_, i) => ({
+        accountId: acc.id,
+        date: new Date(2026, 0, 1, 0, 0, i), // distinct dates so the take(200) is deterministic
+        amountMinor: -100,
+        currency: "EGP",
+        description: "tx" + i,
+        source: "csv",
+        dedupeHash: "h" + i,
+      })),
+    });
+    vi.mocked(llmCategorizeBatch).mockResolvedValue([]);
+    // 201 pending, but the run pulls at most MAX_PER_RUN=200.
+    expect((await categorizeUncategorized()).total).toBe(200);
   });
 });

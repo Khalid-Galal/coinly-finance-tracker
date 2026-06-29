@@ -70,6 +70,27 @@ describe("debitCreditParser.parse", () => {
       description: "Electricity bill",
     });
   });
+
+  it("nets a row that has BOTH debit and credit (= -|debit| + |credit|)", () => {
+    const csv = ["Date,Description,Debit,Credit", "2026-01-01,Adjustment,100.00,30.00"].join("\n");
+    const rows = debitCreditParser.parse(csv);
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ date: "2026-01-01", amountMinor: -7000 });
+  });
+
+  it("treats a debit written as a negative number by magnitude (stays negative)", () => {
+    const csv = ["Date,Description,Debit,Credit", "2026-01-01,Refund reversal,-50.00,"].join("\n");
+    const rows = debitCreditParser.parse(csv);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].amountMinor).toBe(-5000);
+  });
+
+  it("defaults currency to EGP when there is no currency column", () => {
+    const csv = ["Date,Description,Debit,Credit", "2026-01-01,Costa Coffee,50.00,"].join("\n");
+    const rows = debitCreditParser.parse(csv);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].currency).toBe("EGP");
+  });
 });
 
 describe("registry routing", () => {

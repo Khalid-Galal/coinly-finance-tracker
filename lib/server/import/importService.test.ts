@@ -9,6 +9,19 @@ const csv = `date,amount,description,currency
 
 const BOM = String.fromCharCode(0xfeff);
 
+// Generic CSV with two IDENTICAL data rows (same date/amount/description -> same dedupeHash).
+const genericDupCsv = `date,amount,description,currency
+2026-02-01,100,Lunch,EGP
+2026-02-01,100,Lunch,EGP`;
+
+// Generic header with no data rows.
+const genericHeaderOnly = "date,amount,description,currency";
+
+// Debit/Credit two-column bank export: one debit (money out) + one credit (money in).
+const debitCreditCsv = `Date,Description,Debit,Credit,Balance
+2026-03-01,ATM Withdrawal,50.00,,1000.00
+2026-03-02,Salary,,5000.00,6000.00`;
+
 let accountId: string;
 
 beforeEach(async () => {
@@ -34,5 +47,33 @@ describe("importCsv", () => {
 
   it("rejects an unsupported format", async () => {
     await expect(importCsv("foo,bar\n1,2", accountId)).rejects.toThrow(/unsupported/i);
+  });
+
+  it("dedupes identical rows within a single file", async () => {
+    expect(await importCsv(genericDupCsv, accountId)).toEqual({ imported: 1, skipped: 1 });
+    expect(await db.transaction.count()).toBe(1);
+  });
+
+  it("imports nothing from a header-only file (no data rows)", async () => {
+    expect(await importCsv(genericHeaderOnly, accountId)).toEqual({ imported: 0, skipped: 0 });
+    expect(await db.transaction.count()).toBe(0);
+  });
+
+  it("rejects an empty string as unsupported", async () => {
+    // BUG: TEST_PLAN claims an empty file yields { imported: 0, skipped: 0 }; it actually throws.
+    // An empty string has no header line, so no parser matches -> "Unsupported CSV format".
+    await expect(importCsv("", accountId)).rejects.toThrow(/unsupported/i);
+  });
+
+  it("imports debit/credit rows with correct signs (debit negative, credit positive)", async () => {
+    expect(await importCsv(debitCreditCsv, accountId)).toEqual({ imported: 2, skipped: 0 });
+    const txns = await db.transaction.findMany({ where: { accountId } });
+    const amounts = txns.map((t) => t.amountMinor);
+    expect(amounts.filter((a) => a < 0)).toHaveLength(1); // debit -> negative
+    expect(amounts.filter((a) => a > 0)).toHaveLength(1); // credit -> positive
+  });
+
+  it("rejects an import targeting a non-existent account (FK violation)", async () => {
+    await expect(importCsv(csv, "does-not-exist")).rejects.toThrow();
   });
 });

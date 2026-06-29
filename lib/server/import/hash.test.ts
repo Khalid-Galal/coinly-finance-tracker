@@ -20,4 +20,10 @@ describe("dedupeHash", () => {
       dedupeHash({ date: "2026-01-01", amountMinor: 100, description: "Costa" }, "acc2"),
     ).not.toBe(base);
   });
+
+  it("changes when the date changes", () => {
+    expect(
+      dedupeHash({ date: "2026-01-01", amountMinor: 100, description: "Costa" }, "acc1"),
+    ).not.toBe(dedupeHash({ date: "2026-01-02", amountMinor: 100, description: "Costa" }, "acc1"));
+  });
 });
