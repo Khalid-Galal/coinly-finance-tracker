@@ -19,7 +19,10 @@ export default function UnlockPage() {
       });
       if (res.ok) {
         const next = new URLSearchParams(window.location.search).get("next") || "/";
-        window.location.href = next.startsWith("/") ? next : "/";
+        // Only same-origin paths. Reject protocol-relative ("//host") and "/\\host" — both
+        // start with "/" yet navigate off-site (open redirect). Must be a single leading slash.
+        const safe = /^\/(?![/\\])/.test(next) ? next : "/";
+        window.location.href = safe;
       } else {
         setMsg("Incorrect passcode.");
       }
