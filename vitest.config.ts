@@ -1,10 +1,16 @@
 import { defineConfig } from "vitest/config";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
+
+// Resolve the "@/..." path alias (used by app/api route handlers) so route-handler tests can import them.
+const root = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
+  resolve: { alias: { "@": root } },
   test: {
     environment: "node",
-    // Unit/integration tests only. Playwright e2e specs live in ./e2e and run separately.
-    include: ["lib/**/*.test.ts"],
+    // Unit/integration tests (lib/**) + API route-handler tests (app/**). Playwright e2e live in ./e2e.
+    include: ["lib/**/*.test.ts", "app/**/*.test.ts"],
     // Provision a disposable test DB once, and point every worker at it before
     // PrismaClient is constructed — tests must never touch the dev database.
     globalSetup: ["./vitest.globalSetup.ts"],
