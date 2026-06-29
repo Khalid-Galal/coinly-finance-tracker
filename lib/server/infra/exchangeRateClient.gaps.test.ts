@@ -27,14 +27,16 @@ describe("exchangeRateClient — degenerate payloads", () => {
     expect(await db.exchangeRate.count()).toBe(0);
   });
 
-  it("API down + empty cache -> {} cache result, and convertMinor then returns NaN", async () => {
+  it("API down + empty cache -> {} cache result, and convertMinor rejects the missing rate", async () => {
     mockFetch(async () => {
       throw new Error("network down");
     });
     const out = await getRates("EGP", new Date("2026-01-15"));
     expect(out.source).toBe("cache");
     expect(out.rates).toEqual({});
-    // The downstream hazard: a missing quote rate flows into convertMinor as undefined -> NaN.
-    expect(Number.isNaN(convertMinor(10000, "EGP", "USD", out.rates.USD))).toBe(true);
+    // A missing quote rate (undefined) now throws instead of silently producing NaN money.
+    expect(() => convertMinor(10000, "EGP", "USD", out.rates.USD)).toThrow(
+      /no usable exchange rate/,
+    );
   });
 });

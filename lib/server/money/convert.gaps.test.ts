@@ -1,12 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { convertMinor } from "./convert";
 
-// GROUP_C gaps (TEST_PLAN §5 convertMinor): rate=0 silent zero, negative amount, the 2dp
-// assumption (0dp currencies like JPY), overflow, and the undefined-rate NaN money-corruption
-// path that an empty rate cache feeds (see exchangeRateClient.gaps.test.ts).
+// GROUP_C gaps (TEST_PLAN §5 convertMinor): negative amount, the 2dp assumption (0dp currencies
+// like JPY), overflow, and the invalid-rate guard that turns the empty-rate-cache money-corruption
+// path (undefined/0 rate) into a loud error instead of silent NaN/zero.
 describe("convertMinor — edges", () => {
-  it("returns 0 for rate 0 (silent zero — documented)", () => {
-    expect(convertMinor(10000, "USD", "EGP", 0)).toBe(0);
+  it("rejects a 0 rate (would silently zero out the amount)", () => {
+    expect(() => convertMinor(10000, "USD", "EGP", 0)).toThrow(/no usable exchange rate/);
+  });
+
+  it("rejects a negative rate", () => {
+    expect(() => convertMinor(10000, "USD", "EGP", -50)).toThrow(/no usable exchange rate/);
   });
 
   it("converts negative amounts (expenses) symmetrically", () => {
@@ -30,8 +34,8 @@ describe("convertMinor — edges", () => {
     expect(Number.isFinite(out)).toBe(true);
   });
 
-  it("an undefined rate yields NaN — corrupts money downstream when the rate cache is empty", () => {
-    // @ts-expect-error — exercising the unguarded path that empty rate maps reach in production.
-    expect(Number.isNaN(convertMinor(10000, "USD", "EGP", undefined))).toBe(true);
+  it("throws on an undefined/missing rate — no more silent NaN money corruption", () => {
+    // @ts-expect-error — exercising the path that an empty rate cache reaches in production.
+    expect(() => convertMinor(10000, "USD", "EGP", undefined)).toThrow(/no usable exchange rate/);
   });
 });
