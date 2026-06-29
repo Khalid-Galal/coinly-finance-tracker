@@ -1,6 +1,8 @@
 import { test, expect, type BrowserContext, type Page } from "@playwright/test";
 
-const PASSCODE = "e2e-pass";
+// Runs against the shared e2e webServer (playwright.config.ts); env overrides keep it portable.
+const BASE = process.env.E2E_BASE_URL ?? "http://localhost:3911";
+const PASSCODE = process.env.APP_PASSCODE ?? "a-pass";
 
 // One shared, unlocked context for the whole user journey (cookie + DB state persist across steps).
 test.describe.serial("Coinly — full user journey", () => {
@@ -8,7 +10,7 @@ test.describe.serial("Coinly — full user journey", () => {
   let page: Page;
 
   test.beforeAll(async ({ browser }) => {
-    context = await browser.newContext({ baseURL: "http://localhost:3000" });
+    context = await browser.newContext({ baseURL: BASE });
     page = await context.newPage();
     // Unlock wall: a fresh visitor is redirected to /unlock; entering the passcode sets the cookie.
     await page.goto("/dashboard");
@@ -84,7 +86,12 @@ test.describe.serial("Coinly — full user journey", () => {
 
   test("change the base currency in settings", async () => {
     await page.goto("/settings");
-    await page.getByLabel("Base currency code").fill("USD");
+    // Wait for GET /api/settings to prefill before typing — otherwise the late fetch resets the
+    // input to the loaded value (draft === saved) and Save stays disabled. Pick a value != current.
+    await expect(page.locator("strong")).not.toHaveText("…");
+    const current = (await page.locator("strong").innerText()).trim();
+    const target = current === "USD" ? "GBP" : "USD";
+    await page.getByLabel("Base currency code").fill(target);
     await page.getByRole("button", { name: "Save" }).click();
     await expect(page.getByText("Base currency saved.")).toBeVisible();
   });
@@ -99,7 +106,7 @@ test.describe.serial("Coinly — full user journey", () => {
 
 // Security: the gate blocks an unauthenticated visitor (no cookie).
 test("passcode gate blocks unauthenticated access", async ({ browser }) => {
-  const ctx = await browser.newContext({ baseURL: "http://localhost:3000" });
+  const ctx = await browser.newContext({ baseURL: BASE });
   const p = await ctx.newPage();
   await p.goto("/budgets");
   await expect(p).toHaveURL(/\/unlock/); // page navigation redirected to the wall
