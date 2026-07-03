@@ -1,5 +1,7 @@
 # Coinly
 
+[![CI](https://github.com/Khalid-Galal/coinly-finance-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/Khalid-Galal/coinly-finance-tracker/actions/workflows/ci.yml)
+
 Self-hosted personal finance tracker with AI categorization, insights, and voice Q&A.
 MSSE Capstone project — Quantic School of Business and Technology.
 
@@ -55,7 +57,24 @@ npm run dev                # http://localhost:3000
 | `npm run test:coverage` | Vitest with coverage (CI gate ≥ 70%) |
 | `npm run e2e` | Playwright end-to-end |
 | `npm run eval` | Live LLM-to-SQL accuracy eval vs. real Gemini (needs API keys) |
+| `npm run seed:demo` | Seed realistic demo data through the API (accounts + 3 months of transactions + budgets) |
 | `npm run turso:schema` | Emit the full schema SQL for applying to a Turso DB (`\| turso db shell <db>`) |
+
+### Seeding demo data
+
+`npm run seed:demo` populates a running instance so the dashboard, budgets, insights, and Q&A
+aren't empty. It seeds **through the API**, so it works against the live instance from your laptop:
+
+```bash
+# local
+BASE_URL=http://localhost:3000 npm run seed:demo
+# deployed (supply the passcode)
+BASE_URL=https://coinly-kpdh.onrender.com APP_PASSCODE=<passcode> npm run seed:demo
+```
+
+It bails if accounts already exist (re-running would duplicate rows); pass `-- --force` to override.
+Two ready-to-import sample statements live in [`docs/demo/`](./docs/demo): a debit/credit CIB-style
+file and a signed-amount file — use them for the live import step of the demo.
 
 ## Project layout
 

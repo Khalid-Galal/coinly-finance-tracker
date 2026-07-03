@@ -15,8 +15,8 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 
 - [ ] **Warm the live instance** — open https://coinly-kpdh.onrender.com a few minutes early so the free-tier cold start is over.
 - [ ] **Set `APP_PASSCODE`** on Render and have it ready; **`GOOGLE_API_KEYS`** set so AI features work. If using Turso, confirm it's connected (else demo on SQLite and just don't redeploy mid-demo).
-- [ ] **Seed a little realistic data already** (a couple of accounts + an imported CSV) so the dashboard isn't empty — but keep one CSV import and one categorize/QA action *live* for the demo.
-- [ ] Have two sample CSVs on the desktop: one **debit/credit** format (CIB/Banque Misr style) and one **signed-amount** format.
+- [ ] **Seed a little realistic data already** so the dashboard isn't empty: `BASE_URL=<live-url> APP_PASSCODE=<passcode> npm run seed:demo` (2 accounts + 3 months of transactions + budgets) — but keep one CSV import and one categorize/QA action *live* for the demo.
+- [ ] Have the two sample CSVs from [`docs/demo/`](./demo) ready: `cib-debit-credit.csv` (**debit/credit**, CIB/Banque Misr style) and `generic-signed-amount.csv` (**signed-amount**).
 - [ ] **Fallbacks ready:** if voice misfires, type the same question; if the AI cap/quota is hit, narrate the deterministic fallback as a *designed* behavior (it is).
 - [ ] Screen at a readable zoom; close noisy tabs; webcam + mic checked; quiet room.
 - [ ] Recording on a **stable host** (unlisted YouTube / Drive / OneDrive — not an expiring link).

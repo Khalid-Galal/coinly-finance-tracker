@@ -24,7 +24,9 @@ export default defineConfig({
       // are framework glue exercised by Playwright e2e, not unit-counted here.
       include: ["lib/**/*.ts"],
       exclude: ["lib/**/*.test.ts", "lib/**/index.ts", "lib/**/types.ts"],
-      reporter: ["text", "text-summary"],
+      // text/text-summary print to the CI log; lcov + html write a real report to coverage/
+      // so the uploaded CI artifact (US-G6 evidence) actually contains something to open.
+      reporter: ["text", "text-summary", "lcov", "html"],
       // US-G6: enforce >=70% coverage. CI fails below this.
       thresholds: { lines: 70, functions: 70, statements: 70, branches: 70 },
     },

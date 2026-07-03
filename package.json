@@ -13,6 +13,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "eval": "node scripts/eval.mjs",
+    "seed:demo": "node scripts/seed-demo.mjs",
     "turso:schema": "node scripts/build-turso-schema.mjs",
     "e2e": "playwright test",
     "postinstall": "prisma generate"

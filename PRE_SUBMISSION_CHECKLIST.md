@@ -20,7 +20,7 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 - [ ] Passcode gate works **and the passcode is given to the grader** (in README or submission) ⚠️
 - [ ] HTTPS enforced (NFR-3.3)
 - [ ] Instance warmed before grading (Render free tier cold-starts → looks broken)
-- [ ] Seeded with realistic demo data so the dashboard/insights aren't empty
+- [ ] Seeded with realistic demo data so the dashboard/insights aren't empty — run `BASE_URL=<live-url> APP_PASSCODE=<passcode> npm run seed:demo` (2 accounts + 3 months of transactions + budgets), then run the **Post-deploy smoke test** (§D) before recording
 
 ### A3. Task board — *"completion of **ALL** agreed user stories and tasks"* (this is the 5-vs-4 line)
 - [ ] Trello board public/accessible, linked from repo
@@ -68,6 +68,24 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 - [ ] Every link opened in a private/incognito window to confirm it's accessible to someone who isn't you ⚠️
 
 ---
+
+## D. Post-deploy smoke test (5 min, on the live instance)
+
+A green Render health check only proves the process is up — `/api/health` does **not** probe the DB.
+Run this by hand after any redeploy and before recording the demo, so a broken migration or empty DB
+can't ambush you on camera:
+
+1. [ ] Open the live URL in **incognito** → you land on `/unlock` (gate works).
+2. [ ] Enter the passcode → redirected in; the nav and dashboard render.
+3. [ ] Dashboard shows **non-zero** numbers (seed ran) — income/expense/net + category breakdown.
+4. [ ] Import `docs/demo/cib-debit-credit.csv` → "Imported 12" (roughly); re-import → "skipped" (dedupe).
+5. [ ] Transactions → **Auto-categorize** → rows get categories (rules + AI, or rules-only if capped).
+6. [ ] Budgets page → a budget shows a progress bar + status.
+7. [ ] Insights → **Generate weekly** → a report appears (AI or the deterministic fallback).
+8. [ ] Ask → *"How much did I spend on Groceries last month?"* → answer + **Show generated SQL** expands.
+9. [ ] Wrong passcode in a fresh incognito window → "Incorrect passcode." (gate rejects).
+
+If any step fails, fix before recording — the Presentation rubric scores "operates correctly throughout."
 
 ## The 4 gates that decide 5 vs 4
 1. ⚠️ **All committed stories Done** (A3) — or honestly re-scoped to v2 before submitting.
