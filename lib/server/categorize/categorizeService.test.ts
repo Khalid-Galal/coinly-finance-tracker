@@ -145,3 +145,37 @@ describe("categorizeUncategorized", () => {
     expect((await categorizeUncategorized()).total).toBe(200);
   });
 });
+
+// The flagship "learning" loop (FR-2.6) end-to-end at the service layer: correct once, then a later
+// import of the same merchant auto-applies — with the LLM unavailable, so the RULE does the work.
+describe("correction-learning loop (FR-2.6)", () => {
+  it("a correction categorizes a later import of the same merchant, no LLM", async () => {
+    const dining = await category("Dining Out");
+    const acc = await db.account.create({
+      data: { name: "Main", type: "bank", currency: "EGP" },
+    });
+    vi.mocked(llmCategorizeBatch).mockResolvedValue([]); // LLM offline — only the learned rule can match
+
+    // 1) User corrects a "Zooba Cairo" transaction to Dining Out -> learns a merchant_exact rule.
+    await applyCorrection("Zooba Cairo", dining.id);
+
+    // 2) A later import brings the same merchant in, uncategorized.
+    await db.transaction.create({
+      data: {
+        accountId: acc.id,
+        date: new Date("2026-07-01"),
+        amountMinor: -18000,
+        currency: "EGP",
+        description: "Zooba Cairo",
+        source: "csv",
+        dedupeHash: "zooba-1",
+      },
+    });
+
+    // 3) Auto-categorize applies the learned rule (no LLM call needed).
+    expect(await categorizeUncategorized()).toEqual({ categorized: 1, total: 1 });
+    expect(llmCategorizeBatch).not.toHaveBeenCalled();
+    const tx = await db.transaction.findFirst({ where: { description: "Zooba Cairo" } });
+    expect(tx?.categoryId).toBe(dining.id);
+  });
+});

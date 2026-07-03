@@ -9,8 +9,9 @@ export default defineConfig({
   resolve: { alias: { "@": root } },
   test: {
     environment: "node",
-    // Unit/integration tests (lib/**) + API route-handler tests (app/**). Playwright e2e live in ./e2e.
-    include: ["lib/**/*.test.ts", "app/**/*.test.ts"],
+    // Unit/integration tests (lib/**) + API route-handler tests (app/**) + root modules like
+    // proxy.ts. Playwright e2e live in ./e2e.
+    include: ["lib/**/*.test.ts", "app/**/*.test.ts", "*.test.ts"],
     // Provision a disposable test DB once, and point every worker at it before
     // PrismaClient is constructed — tests must never touch the dev database.
     globalSetup: ["./vitest.globalSetup.ts"],

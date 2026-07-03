@@ -8,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 20 # a hung dev-server webServer would otherwise burn the 6h default
     env:
       # Build/typecheck only need a syntactically valid URL; tests provision their
       # own disposable test DB (see vitest.globalSetup.ts).
@@ -39,4 +40,14 @@ jobs:
         with:
           name: coverage
           path: coverage/
+          if-no-files-found: ignore
+
+      # Playwright trace + HTML report for debugging a red e2e run (retain-on-failure in the config).
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report/
+            test-results/
           if-no-files-found: ignore
