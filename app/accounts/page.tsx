@@ -9,9 +9,17 @@ export default function AccountsPage() {
   const [msg, setMsg] = useState("");
 
   function load() {
-    fetch("/api/accounts")
-      .then((r) => r.json())
-      .then((a: Account[]) => setAccounts(a));
+    // Returns the promise so the create handler can await the refresh before it settles.
+    return (
+      fetch("/api/accounts")
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json();
+        })
+        // A 401 returns an {error} object, not an array — guard so .map can't crash the page.
+        .then((a: Account[]) => setAccounts(Array.isArray(a) ? a : []))
+        .catch(() => setMsg("Couldn't load accounts. Refresh or sign in again."))
+    );
   }
 
   useEffect(() => {
@@ -35,7 +43,7 @@ export default function AccountsPage() {
     if (res.ok) {
       formEl.reset();
       setMsg("Account created.");
-      load();
+      await load();
     } else {
       setMsg(`Error: ${JSON.stringify((await res.json()).error)}`);
     }

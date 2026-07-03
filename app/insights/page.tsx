@@ -20,23 +20,38 @@ const egp = (minor: number) => (minor / 100).toFixed(2);
 export default function InsightsPage() {
   const [data, setData] = useState<Data | null>(null);
   const [busy, setBusy] = useState("");
+  const [err, setErr] = useState("");
 
   function load() {
     fetch("/api/insights")
-      .then((r) => r.json())
-      .then((d: Data) => setData(d));
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((d: Data) => {
+        setData(d);
+        setErr("");
+      })
+      .catch(() => setErr("Couldn't load insights. Check your connection and refresh."));
   }
   useEffect(load, []);
 
   async function generate(type: "weekly" | "monthly") {
     setBusy(type);
-    await fetch("/api/insights", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ type }),
-    });
-    setBusy("");
-    load();
+    try {
+      const res = await fetch("/api/insights", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ type }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      setErr("");
+      load();
+    } catch {
+      setErr(`Couldn't generate the ${type} summary. Try again in a moment.`);
+    } finally {
+      setBusy("");
+    }
   }
 
   const capped = data ? data.usage.remaining === 0 : false;
@@ -54,8 +69,14 @@ export default function InsightsPage() {
         </button>
       </p>
 
+      {err && (
+        <p role="alert" style={{ color: "var(--danger)" }}>
+          {err}
+        </p>
+      )}
+
       {data && (
-        <p style={{ fontSize: 13, color: capped ? "#b00" : "#555" }}>
+        <p style={{ fontSize: 13, color: capped ? "var(--danger)" : "var(--muted)" }}>
           AI usage today: {data.usage.used} / {data.usage.cap}
           {capped && " — daily cap reached; summaries fall back to a non-AI report."}
         </p>

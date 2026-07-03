@@ -14,7 +14,10 @@ export default function CategoriesPage() {
   const [busy, setBusy] = useState(false);
 
   function load() {
-    fetch("/api/categories")
+    // Returns the promise so callers can await the refresh — a fire-and-forget load() lets two
+    // rapid mutations (e.g. adding TempA then TempB) run overlapping fetches whose responses can
+    // land out of order and clobber the newer list with a stale one.
+    return fetch("/api/categories")
       .then((r) => r.json())
       .then((c: Category[]) => {
         setCats(c);
@@ -22,12 +25,14 @@ export default function CategoriesPage() {
         setDrafts((prev) => Object.fromEntries(c.map((x) => [x.id, prev[x.id] ?? x.name])));
       });
   }
-  useEffect(load, []);
+  useEffect(() => {
+    load();
+  }, []);
 
   async function report(res: Response, ok: string) {
     if (res.ok) {
       setMsg(ok);
-      load();
+      await load();
       return;
     }
     let detail = res.statusText;

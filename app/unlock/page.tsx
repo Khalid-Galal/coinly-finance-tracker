@@ -23,9 +23,15 @@ export default function UnlockPage() {
         // start with "/" yet navigate off-site (open redirect). Must be a single leading slash.
         const safe = /^\/(?![/\\])/.test(next) ? next : "/";
         window.location.href = safe;
+      } else if (res.status === 429) {
+        setMsg("Too many attempts. Please wait a minute and try again.");
       } else {
         setMsg("Incorrect passcode.");
       }
+    } catch {
+      // Network/offline: fetch rejects. Without this the promise rejection is swallowed and the
+      // user sees the button re-enable with no explanation.
+      setMsg("Network error — please try again.");
     } finally {
       setBusy(false);
     }

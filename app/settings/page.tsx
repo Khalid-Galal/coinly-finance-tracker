@@ -10,11 +10,15 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetch("/api/settings")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((d: { baseCurrency: string }) => {
         setBaseCurrency(d.baseCurrency);
         setDraft(d.baseCurrency);
-      });
+      })
+      .catch(() => setMsg("Error: couldn't load your settings. Refresh to try again."));
   }, []);
 
   async function save(e: FormEvent) {
@@ -74,7 +78,11 @@ export default function SettingsPage() {
         <p
           role="status"
           aria-live="polite"
-          style={{ marginTop: 12, color: "#555", minHeight: "1.2em" }}
+          style={{
+            marginTop: 12,
+            color: msg.startsWith("Error") ? "var(--danger)" : "var(--success)",
+            minHeight: "1.2em",
+          }}
         >
           {msg}
         </p>

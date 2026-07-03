@@ -38,9 +38,14 @@ export default function BudgetsPage() {
   const [baseCurrency, setBaseCurrency] = useState("EGP");
 
   function loadProgress(m: string) {
-    fetch(`/api/budgets?month=${m}`)
-      .then((r) => r.json())
-      .then((p: Progress[] | { error: unknown }) => setProgress(Array.isArray(p) ? p : []));
+    // Returns the promise so mutation handlers can await the refresh instead of racing it.
+    return fetch(`/api/budgets?month=${m}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then((p: Progress[] | { error: unknown }) => setProgress(Array.isArray(p) ? p : []))
+      .catch(() => setMsg("Error: couldn't load budgets for this month."));
   }
 
   useEffect(() => {
@@ -78,15 +83,21 @@ export default function BudgetsPage() {
     if (res.ok) {
       formEl.reset();
       setMsg("Budget saved.");
-      loadProgress(month);
+      await loadProgress(month);
     } else {
       setMsg(`Error: ${JSON.stringify((await res.json()).error)}`);
     }
   }
 
   async function remove(id: string) {
-    await fetch(`/api/budgets/${id}`, { method: "DELETE" });
-    loadProgress(month);
+    const res = await fetch(`/api/budgets/${id}`, { method: "DELETE" });
+    if (!res.ok) {
+      // Without this, a failed delete silently reloads and the row reappears with no feedback.
+      setMsg("Error: couldn't remove that budget.");
+      return;
+    }
+    setMsg("Budget removed.");
+    await loadProgress(month);
   }
 
   return (
@@ -123,7 +134,15 @@ export default function BudgetsPage() {
           </button>
         </form>
       </div>
-      {msg && <p style={{ color: "#555" }}>{msg}</p>}
+      {msg && (
+        <p
+          role="status"
+          aria-live="polite"
+          style={{ color: msg.startsWith("Error") ? "var(--danger)" : "var(--success)" }}
+        >
+          {msg}
+        </p>
+      )}
 
       {progress.length === 0 ? (
         <p>No budgets for {month} yet.</p>

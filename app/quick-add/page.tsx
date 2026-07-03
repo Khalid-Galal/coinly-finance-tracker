@@ -11,11 +11,18 @@ export default function QuickAddPage() {
 
   useEffect(() => {
     fetch("/api/accounts")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((a: Account[]) => {
-        setAccounts(a);
-        if (a[0]) setAccountId(a[0].id);
-      });
+        // A 401 (expired cookie) returns an {error} object, not an array — casting and .map-ing
+        // it crashes the page. Only accept an actual array.
+        const list = Array.isArray(a) ? a : [];
+        setAccounts(list);
+        if (list[0]) setAccountId(list[0].id);
+      })
+      .catch(() => setMsg("Couldn't load accounts. Refresh or sign in again."));
   }, []);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {

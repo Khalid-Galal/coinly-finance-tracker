@@ -85,8 +85,20 @@ async function main() {
   // GET triggers the default-taxonomy seed; build name -> id for leaf categories.
   const categories = await api("GET", "/api/categories");
   const cat = Object.fromEntries(categories.map((c) => [c.name, c.id]));
-  const need = ["Salary", "Rent", "Internet & Phone", "Streaming", "Utilities", "Groceries",
-    "Dining Out", "Fuel", "Ride-hailing", "Pharmacy", "Clothing", "General"];
+  const need = [
+    "Salary",
+    "Rent",
+    "Internet & Phone",
+    "Streaming",
+    "Utilities",
+    "Groceries",
+    "Dining Out",
+    "Fuel",
+    "Ride-hailing",
+    "Pharmacy",
+    "Clothing",
+    "General",
+  ];
   const missing = need.filter((n) => !cat[n]);
   if (missing.length) throw new Error(`Missing expected categories: ${missing.join(", ")}`);
 
@@ -140,7 +152,9 @@ async function main() {
   console.log(
     `Done: ${accounts.length} accounts, ${txCount} transactions across 3 months, ${budgets.length} budgets (${thisMonth}).`,
   );
-  console.log("Tip: open Transactions -> Auto-categorize is optional; rows are already categorized.");
+  console.log(
+    "Tip: open Transactions -> Auto-categorize is optional; rows are already categorized.",
+  );
 }
 
 main().catch((e) => {
