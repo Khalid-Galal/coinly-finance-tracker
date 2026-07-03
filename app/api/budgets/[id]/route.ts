@@ -1,4 +1,5 @@
 import { removeBudget } from "@/lib/server/budgets/budgetService";
+import { apiError } from "@/lib/server/errors";
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -6,6 +7,7 @@ export async function DELETE(_req: Request, { params }: { params: Promise<{ id: 
     await removeBudget(id);
     return Response.json({ ok: true });
   } catch (e) {
-    return Response.json({ error: (e as Error).message }, { status: 500 });
+    // Unknown id -> Prisma P2025 -> apiError maps to 404.
+    return apiError(e);
   }
 }

@@ -19,6 +19,16 @@ describe("apiError", () => {
     expect(await res.json()).toEqual({ error: "not found" });
   });
 
+  it("maps Prisma P2003 (foreign-key constraint) to 400", async () => {
+    const e = new Prisma.PrismaClientKnownRequestError("FK failed", {
+      code: "P2003",
+      clientVersion: "6.0.0",
+    });
+    const res = apiError(e);
+    expect(res.status).toBe(400);
+    expect(await res.json()).toEqual({ error: "referenced record does not exist" });
+  });
+
   it("maps an unknown error to a generic 500 without leaking the message", async () => {
     const spy = vi.spyOn(console, "error").mockImplementation(() => {});
     const res = apiError(new Error("DB exploded: secret connection string"));

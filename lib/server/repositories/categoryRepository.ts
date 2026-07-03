@@ -50,6 +50,10 @@ export const categoryRepository = {
   async rename(id: string, rawName: string) {
     const name = cleanName(rawName);
     await assertNameAvailable(name, id);
+    // Guard archived categories — renaming a hidden category is almost always a stale-UI mistake.
+    // An unknown id falls through to update() and surfaces as P2025 (404), preserving that contract.
+    const existing = await db.category.findUnique({ where: { id } });
+    if (existing?.archivedAt) throw new ValidationError("cannot rename an archived category");
     return db.category.update({ where: { id }, data: { name } });
   },
 

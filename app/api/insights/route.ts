@@ -2,6 +2,7 @@ import { generateInsight, getRecentInsights } from "@/lib/server/insights/insigh
 import { getLlmUsage } from "@/lib/server/insights/costGuard";
 import { detectAnomalies } from "@/lib/server/insights/anomalies";
 import { monthKeyOf } from "@/lib/server/analytics/dateRange";
+import { parseJson, apiError } from "@/lib/server/errors";
 
 export async function GET() {
   const [insights, usage, anomalies] = await Promise.all([
@@ -13,13 +14,14 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const { type } = (await req.json()) as { type?: string };
-  if (type !== "weekly" && type !== "monthly") {
-    return Response.json({ error: "type must be 'weekly' or 'monthly'" }, { status: 400 });
-  }
   try {
+    const { type } = await parseJson<{ type?: string }>(req);
+    if (type !== "weekly" && type !== "monthly") {
+      return Response.json({ error: "type must be 'weekly' or 'monthly'" }, { status: 400 });
+    }
     return Response.json(await generateInsight(type));
   } catch (e) {
-    return Response.json({ error: (e as Error).message }, { status: 500 });
+    // Malformed JSON -> 400 (parseJson); LLM/Gemini failure -> 500 (no message leak).
+    return apiError(e);
   }
 }
