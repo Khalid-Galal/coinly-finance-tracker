@@ -58,6 +58,22 @@ main {
   padding: 28px 24px 56px;
 }
 
+/* Skip-navigation link: off-screen until focused, then slides into the top-left. */
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -48px;
+  z-index: 100;
+  background: var(--brand-dark);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 7px;
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 8px;
+}
+
 h1 {
   font-size: 1.7rem;
   font-weight: 700;
@@ -304,11 +320,12 @@ table {
   margin-left: auto;
 }
 .site-nav__links a {
-  color: rgba(255, 255, 255, 0.82);
+  /* 0.95 (was 0.82) lifts idle-link contrast over #0f766e to >= 4.5:1 (WCAG AA). */
+  color: rgba(255, 255, 255, 0.95);
   padding: 6px 11px;
   border-radius: 7px;
   font-size: 0.92rem;
-  font-weight: 550;
+  font-weight: 500;
 }
 .site-nav__links a:hover {
   text-decoration: none;
@@ -318,6 +335,10 @@ table {
 .site-nav__links a.active {
   color: #fff;
   background: rgba(255, 255, 255, 0.18);
+}
+.site-nav__links a:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
 }
 
 /* Tap-friendly controls + smaller gutters on small screens. */

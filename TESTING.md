@@ -69,7 +69,16 @@ hand-computed expected numbers to drift. Full methodology in [`docs/EVAL.md`](./
   answered questions, so quota exhaustion can't masquerade as a pass. Measured ~94% on answered
   questions.
 
+## Accessibility
+
+Concrete measures in the shell and key screens: a **skip-to-content link**, `aria-current="page"`
+on the active nav item, nav link contrast raised to AA (≥ 4.5:1), a visible `:focus-visible` ring,
+`role="progressbar"` with `aria-value*` on budget bars, and `role="img"` with a spoken data summary
+on the dashboard trend chart. Manual pass per release: keyboard-only traversal (visible focus, the
+skip link works), screen-reader landmark/label sanity (NVDA / VoiceOver), and 200% zoom.
+
 ## Manual test plan
 
-Accessibility (keyboard navigation, screen-reader sanity), real-bank CSV smoke tests (in a
-non-CI environment with actual data), and the browser voice-input compatibility matrix.
+Real-bank CSV smoke tests (in a non-CI environment with actual data) and a browser voice-input
+check — the Web Speech API is Chromium/Safari-only, so the Ask page degrades to a typed fallback
+where it is unsupported.

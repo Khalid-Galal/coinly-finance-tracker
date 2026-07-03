@@ -59,7 +59,9 @@ export default async function DashboardPage({
             {fmt(s.expenseMinor)} {baseCurrency}
           </div>
         </div>
-        <div className="stat">
+        <div
+          className={`stat${s.netMinor < 0 ? " stat--expense" : s.netMinor > 0 ? " stat--income" : ""}`}
+        >
           <div className="label">Net</div>
           <div className="value">
             {fmt(s.netMinor)} {baseCurrency}
@@ -101,6 +103,13 @@ export default async function DashboardPage({
         <span style={{ color: "#d23535", marginLeft: 12 }}>■</span> Expenses
       </p>
       <div
+        role="img"
+        aria-label={`Income versus expenses, last 6 months. ${trend
+          .map(
+            (p) =>
+              `${p.month.slice(2)}: income ${fmt(p.incomeMinor)}, expenses ${fmt(p.expenseMinor)}`,
+          )
+          .join("; ")}.`}
         style={{
           display: "flex",
           alignItems: "flex-end",

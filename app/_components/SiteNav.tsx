@@ -24,13 +24,21 @@ export default function SiteNav() {
     <nav className="site-nav" aria-label="Primary">
       <div className="site-nav__inner">
         <Link href="/" className="site-nav__brand">
-          <span className="dot">C</span> Coinly
+          <span className="dot" aria-hidden="true">
+            C
+          </span>{" "}
+          Coinly
         </Link>
         <div className="site-nav__links">
           {LINKS.map(([href, label]) => {
             const active = pathname === href || pathname.startsWith(href + "/");
             return (
-              <Link key={href} href={href} className={active ? "active" : undefined}>
+              <Link
+                key={href}
+                href={href}
+                className={active ? "active" : undefined}
+                aria-current={active ? "page" : undefined}
+              >
                 {label}
               </Link>
             );

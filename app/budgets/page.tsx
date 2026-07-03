@@ -158,6 +158,11 @@ export default function BudgetsPage() {
                 </span>
               </div>
               <div
+                role="progressbar"
+                aria-valuenow={Math.round(p.pct * 100)}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${p.categoryName} budget used`}
                 style={{
                   background: "#eee",
                   borderRadius: 4,
