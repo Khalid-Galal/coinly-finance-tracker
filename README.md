@@ -25,7 +25,7 @@ MSSE Capstone project — Quantic School of Business and Technology.
 
 ## Links
 
-- **Live demo:** **https://coinly-kpdh.onrender.com** (Render free tier — sleeps when idle, first request cold-starts; storage is ephemeral, so data resets on redeploy). The whole app is passcode-gated: visitors land on an **unlock screen**, enter the passcode (provided to the grader), and a cookie unlocks the UI. `/api/health` stays public.
+- **Live demo:** **https://coinly-kpdh.onrender.com** (Render Starter — always-on, no cold start; a persistent 1 GB disk mounted at `/var/data` keeps the SQLite data across redeploys). The whole app is passcode-gated: visitors land on an **unlock screen**, enter the passcode (provided to the grader), and a cookie unlocks the UI. `/api/health` stays public.
 - **Task board:** [`TASK_BOARD.md`](./TASK_BOARD.md) — version-controlled mirror of the Trello Scrum board. _Trello link: TBD._
 - **Design & testing:** [`DESIGN.md`](./DESIGN.md) · [`TESTING.md`](./TESTING.md)
 - **Demo script:** [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md) — timed 15–20 min walkthrough for the recorded demonstration
@@ -81,7 +81,7 @@ file and a signed-amount file — use them for the live import step of the demo.
 ```
 app/             Pages + API route handlers (thin)
 lib/server/      services / repositories / domain / infra (business logic)
-proxy.ts         Passcode gate for /api/*
+proxy.ts         Passcode gate — redirects pages to /unlock, 401s /api/*
 prisma/          schema + migrations
 e2e/             Playwright specs
 docs/            Planning specs & sprint plans (superpowers/)

@@ -21,8 +21,10 @@ have wiped real dev data.
 
 Target ≥ 70% (NFR-4.1). The hard CI gate is **enabled** (US-G6): `vitest` thresholds fail the
 build below 70% on lines / statements / functions / branches, scoped to the testable `lib/**`
-server logic (app routes and React components are exercised by Playwright, not unit-counted).
-Actual coverage is ~93% lines across ~126 tests.
+server logic (React components are exercised by Playwright, not unit-counted). Actual coverage is
+~97% lines. CI also uploads the coverage report (lcov + HTML) as a build artifact. The suite has
+grown to ~340 unit/integration tests across ~66 files, including in-process **API route-handler
+tests** under `app/api/**/route.test.ts` (see below).
 
 ## What's tested
 
@@ -35,15 +37,22 @@ Unit + integration tests cover the business logic across every feature:
 - **Insights** — anomaly detection, the daily cost cap, weekly/monthly generation with a fallback (Gemini mocked).
 - **Q&A** — the SQL allowlist (including adversarial subquery / CTE / UNION / PRAGMA bypass attempts), the LLM-to-SQL pipeline, and the eval harness.
 - **Categories** — create / rename / archive / merge with data-integrity guards (merge validation, child guard, duplicate-name, re-seed).
-- **Infra** — Gemini client (fetch mocked) + key rotation, exchange rates, the shared error/HTTP mapping.
+- **Infra** — Gemini client (fetch mocked) + key rotation, exchange rates, the shared error/HTTP mapping, the unlock rate limiter.
 - **Repositories** — account / transaction / category / rule data access.
+- **API route handlers** — each `app/api/*` handler is tested in-process (validation, status codes, and safe error mapping: malformed JSON → 400, FK violations → 400/404 not 500, no schema leaks).
 
-**End-to-end (Playwright, real Chromium against the production build):** an 11-test browser suite
-(`e2e/app.spec.ts`) drives the full user journey on the deployed-style server — the passcode
-**unlock wall**, first-run wizard, manual transaction entry, dashboard, transactions list, budgets,
-category management, settings, and the Ask page — plus a security test proving the gate redirects
-unauthenticated pages to `/unlock` and 401s the API, and the `/api/health` smoke check. The e2e
-server runs the real `next build && next start` with the gate on and a fresh migrated DB.
+**End-to-end (Playwright, real Chromium):** five specs / ~26 tests drive the app through the
+passcode **unlock wall** on a gated server with a fresh migrated DB:
+
+- `app.spec.ts` — the full first-run journey (wizard, manual entry, dashboard, transactions, budgets, categories, settings, Ask) + a gate-redirect/401 security test.
+- `ingest.spec.ts` — CSV import round-trip, dedupe on re-import, and the debit/credit parser.
+- `analyze.spec.ts` — dashboard/insights rendering, the budget lifecycle (set → over → remove), and category merge.
+- `ask-config.spec.ts` — settings round-trip that persists across reload, the Ask page (with `/api/qa` stubbed), and the gate negatives (wrong passcode, `?next` redirect, open-redirect guard).
+- `health.spec.ts` — the `/api/health` smoke check.
+
+The e2e server runs `next dev` with the gate on (`APP_PASSCODE` set), so the unlock wall is
+exercised the same way without the multi-minute production build. Timeouts are tuned to absorb the
+dev server's compile-on-first-visit latency; failures retain a Playwright trace in CI.
 
 ## LLM-to-SQL evaluation harness (US-F6)
 

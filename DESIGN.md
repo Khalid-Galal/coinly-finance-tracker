@@ -19,14 +19,17 @@ CI failure surface. The SRS layered architecture is preserved as plain modules (
 **Reason:** Next 14 is end-of-life with unpatched high-severity advisories; the only fix is a
 major bump, which is near-zero cost while the project is greenfield. `npm audit` is clean (0).
 
-### 3. Local-first persistence, optional cloud persistence
-SQLite through Prisma, both locally and on the deployed instance by default (Render runs `prisma
-migrate deploy` at build, creating the schema + the read-only Q&A views). The free-tier disk is
-**ephemeral** — data resets on redeploy. For persistence across redeploys, `lib/server/db.ts`
-uses the **`@prisma/adapter-libsql` driver adapter** when `TURSO_DATABASE_URL` is set, switching
-the runtime to **Turso libSQL** with no code change (verified locally against a libSQL `file:`
-connection). Activating Turso is a one-time setup, below. All monetary values are stored as
-integer **minor units** (no floating point).
+### 3. Local-first persistence, durable cloud persistence
+SQLite through Prisma, both locally and on the deployed instance. On Render the app runs on the
+**Starter plan** (always-on, no cold start) with a **persistent 1 GB disk** mounted at `/var/data`
+(`DATABASE_URL=file:/var/data/coinly.db`). Migrations run **at boot** (`prisma migrate deploy &&
+next start`), not at build, because the disk only mounts at runtime — this creates the schema +
+the read-only Q&A views and **data survives redeploys** (verified with a live write → redeploy →
+read test). `lib/server/db.ts` also keeps the **`@prisma/adapter-libsql` driver adapter** wired as
+an alternative: set `TURSO_DATABASE_URL` to run against Turso libSQL with no code change. The
+persistent disk means Turso isn't needed for the current deploy, but the seam remains for a
+horizontally-scaled future. All monetary values are stored as integer **minor units** (no floating
+point).
 
 **Activate Turso:** (1) `turso db create coinly` and `turso db tokens create coinly`; (2) set
 `TURSO_DATABASE_URL` (the `libsql://…` URL) and `TURSO_AUTH_TOKEN` in the Render dashboard;
@@ -74,8 +77,8 @@ in Sprint 4. Dependencies are scanned (`npm audit`) on every CI run.
 | Option | Topology | Cost | Notes |
 | --- | --- | --- | --- |
 | Local self-host | SQLite + Node on a laptop | $0 | Max privacy; no remote access |
-| **Cloud demo (current)** | Render web + SQLite (ephemeral) + passcode | $0 (free tiers) | Public demo URL; migrations run at build. Data resets on redeploy |
-| Cloud demo + persistence | Render web + Turso libSQL + passcode | $0 (free tiers) | libSQL adapter wired (db.ts); set TURSO_* + apply schema once → data survives redeploys |
+| **Cloud demo (current)** | Render Starter + SQLite on a persistent disk + passcode | ~$7/mo (Starter) + disk | Public demo URL; always-on (no cold start); migrations run at boot; **data survives redeploys** |
+| Cloud demo (Turso alt) | Render web + Turso libSQL + passcode | $0 (free tiers) | libSQL adapter wired (db.ts); set TURSO_* + apply schema once → data survives redeploys, no paid disk |
 | Fly.io + volume | Fly app + persistent volume + SQLite | $0–5/mo | True SQLite in the cloud |
 | Multi-user production | Container + PostgreSQL + auth + WAF | $20–50/mo | Out of scope for this capstone |
 
