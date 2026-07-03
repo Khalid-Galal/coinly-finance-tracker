@@ -61,8 +61,13 @@ test.describe.serial("Coinly — analyze journey", () => {
 
   test("budget lifecycle: set, consume to over-budget, then remove", async () => {
     // 1) Add an expense and categorise it so it counts as spend for the budget.
+    // The budget is set for the CURRENT month (budgets page defaults to it), so the transaction
+    // must fall in the current month too — a hardcoded date silently stops counting once the
+    // month rolls over. Use the 1st of the current month (always in-range, always <= today).
+    const now = new Date();
+    const dateInThisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
     await page.goto("/quick-add");
-    await page.getByLabel("Date").fill("2026-06-15");
+    await page.getByLabel("Date").fill(dateInThisMonth);
     await page.getByLabel("Amount").fill("-250.50");
     await page.getByLabel("Description").fill("Dining bill");
     await page.getByRole("button", { name: "Add" }).click();
