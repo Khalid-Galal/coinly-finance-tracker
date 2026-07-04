@@ -40,7 +40,7 @@ describe("POST /api/qa", () => {
     const body = await res.json();
     expect(body.question).toBe("how many?");
     expect(body.sql).toContain("v_transactions");
-    expect(body.answer).toBe("n: 1");
+    expect(body.answer).toBe("1"); // non-money scalar -> the value, no column label
     expect(body.error).toBeUndefined();
   });
 

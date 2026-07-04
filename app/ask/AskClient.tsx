@@ -18,7 +18,8 @@ const EXAMPLES = [
 ];
 
 function cell(key: string, v: unknown): string {
-  if (typeof v === "number" && /minor$/i.test(key)) return (v / 100).toFixed(2);
+  // Match "minor" anywhere so aggregate columns like SUM(expenseMinor) also divide to major units.
+  if (typeof v === "number" && /minor/i.test(key)) return (v / 100).toFixed(2);
   return v === null || v === undefined ? "—" : String(v);
 }
 
@@ -160,7 +161,7 @@ export function AskClient() {
                     {result.rows.map((row, ri) => (
                       <tr key={ri}>
                         {columns.map((c) => (
-                          <td key={c} style={{ textAlign: /minor$/i.test(c) ? "right" : "left" }}>
+                          <td key={c} style={{ textAlign: /minor/i.test(c) ? "right" : "left" }}>
                             {cell(c, row[c])}
                           </td>
                         ))}

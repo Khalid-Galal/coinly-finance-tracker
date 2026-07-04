@@ -50,7 +50,7 @@ describe("askQuestion — formatAnswer branches", () => {
     );
     expect(r.error).toBeUndefined();
     expect(r.rows).toEqual([{ totalMinor: 92000 }]); // 100000 - 5000 - 3000
-    expect(r.answer).toBe("totalMinor: 920.00");
+    expect(r.answer).toBe("EGP 920.00");
   });
 
   it("1 row / multiple columns -> '1 result.' (not a scalar)", async () => {
@@ -105,7 +105,7 @@ describe("askQuestion — failure handling (returns error in body, never throws)
     vi.spyOn(db.qaHistory, "create").mockRejectedValueOnce(new Error("disk full"));
     const r = await askQuestion("count", gen("SELECT COUNT(*) AS n FROM v_transactions"));
     expect(r.error).toBeUndefined();
-    expect(r.answer).toBe("n: 3");
+    expect(r.answer).toBe("3");
   });
 
   it("an empty question short-circuits before generating any SQL", async () => {

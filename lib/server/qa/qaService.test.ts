@@ -56,7 +56,7 @@ describe("askQuestion", () => {
     const r = await askQuestion("how many transactions are there?");
     expect(r.error).toBeUndefined();
     expect(r.rows).toEqual([{ n: 3 }]);
-    expect(r.answer).toBe("n: 3");
+    expect(r.answer).toBe("3"); // non-money scalar -> the value, no technical column label
     expect(r.sql).toContain("v_transactions");
   });
 
@@ -67,7 +67,7 @@ describe("askQuestion", () => {
     const r = await askQuestion("how much did I spend in March?");
     expect(r.error).toBeUndefined();
     expect(r.rows).toEqual([{ totalMinor: 8000 }]);
-    expect(r.answer).toBe("totalMinor: 80.00");
+    expect(r.answer).toBe("EGP 80.00"); // money scalar -> base currency + major units
   });
 
   it("strips markdown fences from the LLM response before executing", async () => {

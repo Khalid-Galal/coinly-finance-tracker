@@ -1,6 +1,7 @@
 import { db } from "../db";
 import { geminiGenerateText } from "../infra/geminiClient";
 import { validateSql } from "./sqlAllowlist";
+import { getBaseCurrency } from "../settings/settingService";
 
 /** Views the LLM is allowed to query (mirrors prisma/migrations/.../qa_readonly_views). */
 const ALLOWED_VIEWS = ["v_transactions", "v_category_totals"];
@@ -32,6 +33,7 @@ Rules:
 - SELECT only. No INSERT/UPDATE/DELETE/DDL, no comments, no semicolons, no multiple statements.
 - Reference ONLY the two views above. Never reference base tables.
 - Amounts are already in minor units; do NOT divide by 100.
+- When selecting a single money total, alias it with a name ending in 'Minor' (e.g. SUM(expenseMinor) AS totalMinor) so the app formats it as currency.
 - Output ONLY the SQL query. No explanation, no markdown fences.`;
 
 export type QaResult = {
@@ -63,18 +65,24 @@ function normalizeRows(rows: Record<string, unknown>[]): Record<string, unknown>
   });
 }
 
-function formatValue(key: string, v: unknown): string {
-  if (typeof v === "number" && /minor$/i.test(key)) return (v / 100).toFixed(2);
-  return v === null ? "—" : String(v);
-}
-
-/** A short, deterministic answer. We never send result rows back to the LLM (data minimization). */
-function formatAnswer(rows: Record<string, unknown>[]): string {
+/**
+ * A short, deterministic natural answer (we never send result rows back to the LLM — data
+ * minimization). A single money value reads as "EGP 4725.00"; a single non-money value is shown
+ * as itself; anything wider is summarised with a count and rendered as a table by the UI.
+ */
+function formatAnswer(rows: Record<string, unknown>[], baseCurrency: string): string {
   if (rows.length === 0) return "No matching results.";
   if (rows.length === 1) {
     const entries = Object.entries(rows[0]);
-    if (entries.length === 1)
-      return `${entries[0][0]}: ${formatValue(entries[0][0], entries[0][1])}`;
+    if (entries.length === 1) {
+      const [key, v] = entries[0];
+      // Money columns are minor units. Match "minor" anywhere in the name so an aggregate alias
+      // like SUM(expenseMinor) — which doesn't END in "minor" — is still formatted as currency.
+      if (typeof v === "number" && /minor/i.test(key)) {
+        return `${baseCurrency} ${(v / 100).toFixed(2)}`;
+      }
+      return v === null || v === undefined ? "—" : String(v);
+    }
   }
   return `${rows.length} result${rows.length === 1 ? "" : "s"}.`;
 }
@@ -125,7 +133,8 @@ export async function askQuestion(
   try {
     const rows = await runReadOnlySql(sql);
     await saveHistory(q, sql, rows);
-    return { question: q, sql, rows, answer: formatAnswer(rows) };
+    const baseCurrency = await getBaseCurrency();
+    return { question: q, sql, rows, answer: formatAnswer(rows, baseCurrency) };
   } catch (e) {
     await saveHistory(q, sql, null);
     return { question: q, sql, rows: [], answer: "", error: (e as Error).message };
