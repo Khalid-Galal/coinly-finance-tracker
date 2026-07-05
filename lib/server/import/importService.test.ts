@@ -60,7 +60,6 @@ describe("importCsv", () => {
   });
 
   it("rejects an empty string as unsupported", async () => {
-    // BUG: TEST_PLAN claims an empty file yields { imported: 0, skipped: 0 }; it actually throws.
     // An empty string has no header line, so no parser matches -> "Unsupported CSV format".
     await expect(importCsv("", accountId)).rejects.toThrow(/unsupported/i);
   });

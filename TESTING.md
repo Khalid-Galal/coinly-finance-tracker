@@ -12,19 +12,21 @@ Vitest (unit/integration) · `@vitest/coverage-v8` · Playwright (E2E) · ESLint
 ## Test-database isolation
 
 Tests never touch the developer's database. `vitest.globalSetup.ts` provisions a disposable
-`prisma/test.db` from the committed migrations once per run; `vitest.setup.ts` binds the Prisma
-client to it before import; a guard refuses to run if `DATABASE_URL` resolves to `dev.db`. This
-was hardened after an adversarial review caught that the first repository test would otherwise
-have wiped real dev data.
+`prisma/test.db` from the committed migrations once per run; `vitest.setup.ts` forcibly rebinds
+`DATABASE_URL` to that disposable `test.db` before the Prisma client is constructed (the client
+is imported dynamically, after the rebind), so tests can never touch `dev.db`. This was hardened
+after an adversarial review caught that the first repository test would otherwise have wiped real
+dev data.
 
 ## Coverage
 
 Target ≥ 70% (NFR-4.1). The hard CI gate is **enabled** (US-G6): `vitest` thresholds fail the
 build below 70% on lines / statements / functions / branches, scoped to the testable `lib/**`
-server logic (React components are exercised by Playwright, not unit-counted). Actual coverage is
-~97% lines. CI also uploads the coverage report (lcov + HTML) as a build artifact. The suite has
-grown to ~340 unit/integration tests across ~66 files, including in-process **API route-handler
-tests** under `app/api/**/route.test.ts` (see below).
+server logic (React components are exercised by Playwright, not unit-counted). Actual coverage on
+that gated scope (as of 2026-07-05): 96.4% statements / 97.5% lines / 91.0% branches. CI also
+uploads the coverage report (lcov + HTML) as a build artifact. The suite has grown to 359
+unit/integration test cases (358 passed + 1 intentionally skipped) across 68 files, including
+in-process **API route-handler tests** under `app/api/**/route.test.ts` (see below).
 
 ## What's tested
 
@@ -37,7 +39,7 @@ Unit + integration tests cover the business logic across every feature:
 - **Insights** — anomaly detection, the daily cost cap, weekly/monthly generation with a fallback (Gemini mocked).
 - **Q&A** — the SQL allowlist (including adversarial subquery / CTE / UNION / PRAGMA bypass attempts), the LLM-to-SQL pipeline, and the eval harness.
 - **Categories** — create / rename / archive / merge with data-integrity guards (merge validation, child guard, duplicate-name, re-seed).
-- **Infra** — Gemini client (fetch mocked) + key rotation, exchange rates, the shared error/HTTP mapping, the unlock rate limiter.
+- **Infra** — Gemini client (fetch mocked) + key rotation, exchange rates, the shared error/HTTP mapping, the unlock rate limiter, and the passcode gate (`proxy.test.ts` — 8 unit tests: public routes pass through, locked pages redirect to `/unlock?next=…`, locked `/api/*` returns 401, cookie/header auth, and the production fail-closed 503 that e2e can't reach).
 - **Repositories** — account / transaction / category / rule data access.
 - **API route handlers** — each `app/api/*` handler is tested in-process (validation, status codes, and safe error mapping: malformed JSON → 400, FK violations → 400/404 not 500, no schema leaks).
 
@@ -66,8 +68,8 @@ hand-computed expected numbers to drift. Full methodology in [`docs/EVAL.md`](./
   the scorer isn't vacuously passing (a deliberately-wrong model is caught).
 - **Live (`npm run eval`):** runs the set against real Gemini. Rate-limit / quota failures are
   classified as infrastructure (excluded from the accuracy denominator) and the run requires ≥ 10
-  answered questions, so quota exhaustion can't masquerade as a pass. Measured ~94% on answered
-  questions.
+  answered questions, so quota exhaustion can't masquerade as a pass. Latest full run (2026-07-05): **91%** (29/32, 0 quota
+  skips) — raw log committed at `docs/eval-runs/2026-07-05.log`; methodology in `docs/EVAL.md`.
 
 ## Accessibility
 

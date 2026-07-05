@@ -3,10 +3,11 @@
 > Companion to [`TESTING.md`](./TESTING.md) (strategy) and [`UI_POLISH.md`](./UI_POLISH.md) (visual QA).
 > This document is the **inventory + acceptance plan**: every page, endpoint, component, flow, and
 > server module, with what "working" means and the happy-path + edge cases to verify. The codebase
-> ships **~340 Vitest tests (~66 files) at ~97% line coverage over `lib/**`** — including in-process
-> API route-handler tests — **plus 5 Playwright specs (~26 tests)**; this plan documents the full
-> behavioral contract, calls out the **gaps** those tests miss, and partitioned the remaining work
-> into 3 independently-runnable groups (§8).
+> ships **359 Vitest test cases (358 passed + 1 intentionally skipped, 68 files) at 96.4%
+> statements / 97.5% lines / 91.0% branches over the CI-gated `lib/**` scope (threshold 70%)** —
+> including in-process API route-handler tests — **plus 5 Playwright specs (~26 tests)**; this
+> plan documents the full behavioral contract, calls out the **gaps** those tests miss, and
+> partitioned the remaining work into 3 independently-runnable groups (§8).
 >
 > **Status (2026-07-04):** All three groups (A/B/C) have been executed and merged to `main`. Most of
 > the ⚠ flags below are now **resolved** — notably: malformed-JSON → 400 (accounts/transactions/
@@ -119,7 +120,7 @@ Group tags **[A]/[B]/[C]** map to the parallelization plan in §8.
 - **`PATCH /api/transactions/[id]`** → `{categoryId(min1)}`; updates category, writes audit log, calls `applyCorrection`; 200 `{ok:true}` / 400 / 404. Happy: valid → updated + correction rule created. Edge: `{categoryId:""}`/`{}`→400; unknown id→404 `{error:"not found"}`; **non-existent categoryId → FK → 500** ⚠; **`applyCorrection` throws after DB update → 500 but txn already changed (inconsistent)** ⚠; **no DELETE route** (`remove()` unreachable).
 
 ### Import **[A]** · `app/api/import/route.ts`
-- **`POST /api/import`** → `multipart/form-data` `{file:File, accountId}`; 200 `{imported, skipped}` / 400 `{error}`. Happy: generic CSV → counts; re-POST same → `{imported:0, skipped:N}`; BOM CSV; debit/credit CSV (CIB). Edge: missing file/accountId → 400 "file and accountId are required"; unknown header → 400 "Unsupported CSV format"; empty file → `{0,0}`; **bad accountId → raw Prisma FK error in 400 (leaks schema)** ⚠; **no size/row limit** (OOM risk) ⚠; within-file dup rows → deduped.
+- **`POST /api/import`** → `multipart/form-data` `{file:File, accountId}`; 200 `{imported, skipped}` / 400 `{error}`. Happy: generic CSV → counts; re-POST same → `{imported:0, skipped:N}`; BOM CSV; debit/credit CSV (CIB). Edge: missing file/accountId → 400 "file and accountId are required"; unknown header → 400 "Unsupported CSV format"; empty file → 400 "Unsupported CSV format" (no header line, so no parser matches — a header-only file with no data rows is what yields `{0,0}`); **bad accountId → raw Prisma FK error in 400 (leaks schema)** ⚠; **no size/row limit** (OOM risk) ⚠; within-file dup rows → deduped.
 
 ### Categorize **[A]** · `app/api/categorize/route.ts`
 - **`POST /api/categorize`** (no body) → 200 `{categorized, total}` / 500 `{error}`. Happy: all rule-matched → `categorized===total`, LLM never called; none pending → `{0,0}`. Edge: DB down → 500; **LLM quota exhausted → still 200** (per-chunk catch; only rule matches count) — assert *no false 500*; 201+ pending → only 200 processed (`MAX_PER_RUN` cap), 201st untouched; extraneous body ignored.
@@ -202,7 +203,7 @@ Group tags **[A]/[B]/[C]** map to the parallelization plan in §8.
 
 ## 6. Cross-cutting — assert once
 
-- **Passcode gate (`proxy.ts` + `passcode.ts`):** locked page → 302 `/unlock?next=…`; locked `/api/*` → 401; public (`/unlock`,`/api/unlock`,`/api/health`) → through; prod + no `APP_PASSCODE` → 503 fail-closed; cookie round-trip unlocks UI. (Already covered by e2e "passcode gate blocks unauthenticated access".)
+- **Passcode gate (`proxy.ts` + `passcode.ts`):** locked page → 307 `/unlock?next=…`; locked `/api/*` → 401; public (`/unlock`,`/api/unlock`,`/api/health`) → through; prod + no `APP_PASSCODE` → 503 fail-closed; cookie round-trip unlocks UI. (Covered by e2e "passcode gate blocks unauthenticated access", and now also asserted at unit level: `proxy.test.ts` — 8 tests including the production fail-closed 503 the dev-server e2e can't reach — plus `lib/server/passcode.test.ts`.)
 - **Error mapping (`errors.ts`):** `ValidationError`→400 verbatim; P2025→404 "not found"; else→500 "request failed" (no internals leak).
 - **Health smoke (`/api/health`):** 200 `{ok:true}` (already covered by `e2e/health.spec.ts`).
 - **Layout/Nav/CSS:** `<html lang="en">`, `<title>Coinly</title>`, nav present except `/unlock` & `/welcome`.
