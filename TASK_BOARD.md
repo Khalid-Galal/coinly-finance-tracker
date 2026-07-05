@@ -1,9 +1,15 @@
 # Coinly — Task Board
 
-Version-controlled mirror of the Trello Scrum board (SRS §12.2). **Update a story's status here in
-the same PR that delivers it, and mirror to Trello.** This file is itself an accessible task board
-documenting completion of **all agreed user stories** — directly serving the Project Rubric (score 5):
-*"an up-to-date task board showing completion of all agreed user stories and tasks."*
+This version-controlled file is the **canonical Scrum board** for the project (SRS §12.2).
+**A story's status is flipped here in the same commit/PR that delivers it**, so this file's git
+history (`git log -- TASK_BOARD.md`) is the per-commit, real-time record of board updates. A public
+Trello mirror of this board will be linked here at submission. This board documents completion of
+**all agreed user stories** — directly serving the Project Rubric (score 5): *"an up-to-date task
+board showing completion of all agreed user stories and tasks."*
+
+**Trello mirror:** _public board link to be added at submission_
+
+**Last updated:** 2026-07-05
 
 **Status:** ☐ Todo · ◐ In progress · ☑ Done · ⏸ Blocked · ✂ Moved to v2
 **Tiers (roadmap §4):** P0 never cut · P1 the pass · P2 wins the 5 (protect) · P3 first to v2
@@ -15,7 +21,18 @@ documenting completion of **all agreed user stories** — directly serving the P
 | Sprints 0–5 feature work | all P0/P1/P2 stories | ☑ |
 | G7 README + design/testing docs | US-G7 | ☑ |
 | Pre-submission self-audit + fixes | (quality) | ☑ |
-| Trello board public + linked / recorded demo video | (you) | ◐ |
+| Live-deploy persistence verified (Render persistent disk) | US-G5 | ☑ 2026-06-28 (`2688063`, `51fd123`) |
+| Demo seed script + sample CSVs + smoke checklist | (demo prep) | ☑ (`c295644`) |
+| Unlock rate-limiting + fetch/POST error surfacing | (security/UX) | ☑ (`67e433d`) |
+| E2E suite stabilization after group-b merge | US-G6 | ☑ (`33a9c97`) |
+| Testing/deploy docs reconciled with codebase | US-G7 | ☑ (`f7c3ff9`) |
+| Accessibility P1 pass + favicon | (a11y) | ☑ (`36c5081`) |
+| Route-handler + gap test expansion, CI test artifacts | US-G6 | ☑ (`7c48e02`) |
+| Natural, currency-formatted Q&A answers | US-F1 | ☑ (`e88aa96`) |
+| Q&A relative-date resolution + seeded-data example realignment | US-F1/F6 | ☑ (`d41bbd8`) |
+| Security scrub: passcode removed from seed-script usage example | (security) | ☑ (`0c51a0a`) |
+| LF line-ending normalization (`.gitattributes`) | (quality) | ☑ (`1d1758b`) |
+| Prettier fixes restoring green CI | (quality) | ☑ (`664f8b1`) |
 
 ## Full backlog — all agreed user stories
 
@@ -76,9 +93,17 @@ delivered; A4 (NBE) was in the cut set but shipped via the shared debit/credit p
 | 3 Insights/Budgets | 34 | ☑ Done (trend chart, budgets, AI weekly/monthly insights + anomalies + cost cap) |
 | 4 Q&A + Voice | 33 | ☑ Done (guarded LLM-to-SQL + voice + eval; ≥70% coverage gate enforced) |
 | 5 Polish | 31 | ☑ Done (P1: B2, C6, G1, G2); P3 C4/B7/F5/G3 moved to v2 |
-| 6 Submission | 5 | ◐ Docs + pre-submission audit done; recorded demo + Trello link + live-deploy verify pending (you) |
+| 6 Submission | 5 | ☑ Done (docs + audit; deploy persistence verified 2026-06-28; a11y pass; test expansion + CI artifacts; Q&A answer polish; security scrub; green CI) |
+
+## Submission logistics (not user stories — tracked in [PRE_SUBMISSION_CHECKLIST.md](PRE_SUBMISSION_CHECKLIST.md))
+
+Two delivery-logistics items remain before submission. They are not agreed user stories or sprint
+tasks, so they live in the pre-submission checklist rather than on this board:
+
+- Publish the Trello mirror of this board and add its link in the header slot above.
+- Record the demo video (script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)).
 
 ## Definition of Done (per story)
-Merged via reviewed PR · unit+integration tests pass in CI · lint/format/types pass · acceptance
-criteria met · docs updated · if user-facing: deployed to live instance + manual UX smoke ·
-**status flipped to ☑ here and on Trello.**
+Merged to `main` behind the full CI gate (lint · format · types · tests+coverage · audit · build ·
+e2e) · acceptance criteria met · docs updated · if user-facing: deployed to live instance + manual UX smoke ·
+**status flipped to ☑ here (canonical) and mirrored to Trello.**
