@@ -17,7 +17,8 @@ CI failure surface. The SRS layered architecture is preserved as plain modules (
 ### 2. Next 16 + React 19 (SRS proposed Next 14)
 **Decision:** build on the current supported line.
 **Reason:** Next 14 is end-of-life with unpatched high-severity advisories; the only fix is a
-major bump, which is near-zero cost while the project is greenfield. `npm audit` is clean (0).
+major bump, which is near-zero cost while the project is greenfield. `npm audit --omit=dev
+--audit-level=high` gates every CI run — clean as of Sprint 6.
 
 ### 3. Local-first persistence, durable cloud persistence
 SQLite through Prisma, both locally and on the deployed instance. On Render the app runs on the
@@ -52,14 +53,21 @@ related code together and easy to hold in context.
 
 ## Patterns (filled in as implemented, with reasons)
 
-- **Repository** — data access behind a domain interface. _Implemented Sprint 0 (`accountRepository`)._
-- **Strategy** — pluggable categorization (rules / LLM / hybrid). _Sprint 2._
-- **Service Layer** — use-case orchestration, thin controllers. _Sprint 1+._
-- **Adapter** — CSV parsers behind one `BankStatementParser` interface, auto-selected by header sniffing: a generic single signed-amount parser and a debit/credit two-column parser (CIB, Banque Misr, NBE), with the generic one as fallback. _Sprint 1._
-- **Pipeline** — CSV import as parse → dedupe → normalize → categorize → persist. _Sprint 1._
+- **Repository** — data access behind a domain interface (`lib/server/repositories/`). _Why:_ storage can move SQLite → Turso/Postgres without touching feature code, and repositories are trivially mockable in unit tests. _Implemented Sprint 0 (`accountRepository`)._
+- **Rules-first hybrid categorization** — deterministic user rules run first; only the remainder is batched to the LLM (~1 call per 20 transactions), and LLM failure degrades to rules-only, leaving the rest uncategorized (`categorizeService.ts`). _Why:_ rules are free, instant, and predictable; the LLM covers only the long tail (cost + accuracy); and the feature never hard-fails on quota or network (availability). _Sprint 2._
+- **Service Layer** — use-case orchestration in `lib/server/<feature>/`, thin controllers. _Why:_ route handlers stay ~10 lines, and orchestration is unit-testable without going through HTTP. _Sprint 1+._
+- **Adapter** — CSV parsers behind one `BankStatementParser` interface, auto-selected by header sniffing: a generic single signed-amount parser and a debit/credit two-column parser (CIB, Banque Misr, NBE), with the generic one as fallback. _Why:_ adding a bank is one parser file plus a registry entry — no changes to the import service. _Sprint 1._
+- **Pipeline** — CSV import as parse (parsers normalize dates/amounts to minor units) → hash → dedupe (against the DB and within the file) → persist (`lib/server/import/importService.ts`). Categorization is deliberately **not** an import stage: it is a separate user-triggered step (`POST /api/categorize`, from the transactions page). _Why:_ import stays fast and idempotent, and still works when the LLM is down. _Sprint 1._
 - **Guarded LLM-to-SQL** — LLM generates SQL over read-only views, validated against a SELECT-only allowlist before execution; the SQL is surfaced to the user. _Sprint 4._
 - **Multi-key rotation** — the Gemini client rotates across configured API keys on rate-limit / transient failure, sticking to the last good key. _Sprint 2._
 - **Cost-capped AI insights** — a per-day cap on LLM insight generation (counter in the `Setting` table); at the cap it short-circuits to a deterministic, non-AI fallback so the feature still works. _Sprint 3._
+
+### Technology choices
+
+- **Google Gemini** (`gemini-2.5-flash`, called via the REST API — no SDK dependency) — the free-tier quota is workable for a single-user app once combined with multi-key rotation (`lib/server/infra/keyRotation.ts`) and the daily insight cost cap (`costGuard.ts`), and it reliably returns the JSON array the batched categorization prompt asks for.
+- **Prisma** — typed schema and generated client, a migration engine (`prisma migrate deploy` at boot), and the driver-adapter seam (`@prisma/adapter-libsql`) that makes Turso a config change rather than a rewrite.
+- **TypeScript `strict` + zod** — end-to-end static typing, with zod schemas (`lib/shared/schemas.ts`, used by the API routes) adding runtime validation at the API boundary where static types can't reach request bodies.
+- **papaparse** — battle-tested CSV parsing (quoted fields, embedded delimiters/newlines, delimiter auto-detection) instead of a hand-rolled split; the import service additionally strips the UTF-8 BOM that Excel and bank exports prepend before header sniffing.
 
 ## Security
 
@@ -76,11 +84,15 @@ in Sprint 4. Dependencies are scanned (`npm audit`) on every CI run.
 
 | Option | Topology | Cost | Notes |
 | --- | --- | --- | --- |
-| Local self-host | SQLite + Node on a laptop | $0 | Max privacy; no remote access |
+| On-premises (local self-host) | SQLite + Node on a laptop | $0 | Max privacy; no remote access |
 | **Cloud demo (current)** | Render Starter + SQLite on a persistent disk + passcode | ~$7/mo (Starter) + disk | Public demo URL; always-on (no cold start); migrations run at boot; **data survives redeploys** |
 | Cloud demo (Turso alt) | Render web + Turso libSQL + passcode | $0 (free tiers) | libSQL adapter wired (db.ts); set TURSO_* + apply schema once → data survives redeploys, no paid disk |
 | Fly.io + volume | Fly app + persistent volume + SQLite | $0–5/mo | True SQLite in the cloud |
 | Multi-user production | Container + PostgreSQL + auth + WAF | $20–50/mo | Out of scope for this capstone |
+
+**Recommendation:** the Render Starter cloud deploy (~$7/mo, always-on, durable disk) for the
+graded demo — a public URL with no cold start and data that survives redeploys; on-premises
+self-hosting remains the $0 maximum-privacy option.
 
 ## Data model
 

@@ -5,10 +5,11 @@ import { PrismaLibSQL } from "@prisma/adapter-libsql";
 const g = globalThis as unknown as { prisma?: PrismaClient };
 
 /**
- * Bound to DATABASE_URL (SQLite) locally and on Render by default. When TURSO_DATABASE_URL is set,
- * use the libSQL driver adapter so the deployed instance persists data across redeploys (the
- * Render free-tier disk is ephemeral). Setting the two TURSO_* env vars is all that's needed —
- * no code change. See DESIGN.md "Deployment options".
+ * Bound to DATABASE_URL (SQLite) locally and on Render by default: the deployed instance persists
+ * its SQLite file on the Render Starter plan's 1 GB disk at /var/data (render.yaml), so data
+ * survives redeploys. When TURSO_DATABASE_URL is set, the libSQL driver adapter switches to hosted
+ * Turso as an optional off-box alternative. Setting the two TURSO_* env vars is all that's
+ * needed — no code change. See DESIGN.md "Deployment options".
  */
 function createPrismaClient(): PrismaClient {
   const url = process.env.TURSO_DATABASE_URL;
