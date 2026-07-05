@@ -9,18 +9,26 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 
 ### A1. Software repository — *"all developed project code, appropriately documented"*
 - [ ] Repo shared with the **quantic-grader** GitHub account (access confirmed, not just invited)
-- [ ] `README.md`: setup, configuration, env vars, local + deploy instructions (NFR-4.3)
-- [ ] All public functions/modules have TypeScript types + JSDoc (NFR-4.2)
-- [ ] No secrets committed — keys only in env vars (NFR-3.1); `.env.example` present
-- [ ] `LICENSE` is MIT or Apache-2.0 (NFR-6.3)
-- [ ] `AI_USAGE.md` + `CITATIONS.md` present and current — **plagiarism = automatic 0**
+- [x] `README.md`: setup, configuration, env vars, local + deploy instructions (NFR-4.3)
+- [x] All public functions/modules have TypeScript types + JSDoc (NFR-4.2)
+- [ ] No secrets committed — keys only in env vars (NFR-3.1); `.env.example` present ⚠️ *(tree is clean
+  — a passcode that briefly sat in a seed-script comment was scrubbed in `0c51a0a`; **rotate
+  `APP_PASSCODE` on Render** to invalidate the historical value, then tick)*
+- [x] `LICENSE` is MIT or Apache-2.0 (NFR-6.3)
+- [x] `AI_USAGE.md` + `CITATIONS.md` present and current — **plagiarism = automatic 0**
 
 ### A2. Deployed version — *"link to the deployed version (if a Web application)"*
-- [ ] Live Render URL reachable from the README ⚠️ (SQLite; data resets on redeploy — warm + seed before grading)
+- [x] Live Render URL reachable from the README ⚠️ (verified 2026-07-05: `/api/health` 200, root → `/unlock`;
+  SQLite persists on the Starter disk — data survives redeploys)
 - [ ] Passcode gate works **and the passcode is given to the grader** (in README or submission) ⚠️
-- [ ] HTTPS enforced (NFR-3.3)
-- [ ] Instance warmed before grading (Render free tier cold-starts → looks broken)
-- [ ] Seeded with realistic demo data so the dashboard/insights aren't empty — run `BASE_URL=<live-url> APP_PASSCODE=<passcode> npm run seed:demo` (2 accounts + 3 months of transactions + budgets), then run the **Post-deploy smoke test** (§D) before recording
+- [x] HTTPS enforced (NFR-3.3)
+- [x] Always-on (Render Starter) — no cold start to warm
+- [x] Seeded with realistic demo data (2026-07-05): 2 accounts + 44 transactions across 3 months +
+  3 current-month budgets, via `npm run seed:demo`. Still run the **Post-deploy smoke test** (§D)
+  before recording
+- [ ] ⚠️ **Gemini keys are NOT configured on Render** — live `/api/qa` returns "No Gemini API keys
+  configured" and insight generation 500s. Add `GEMINI_API_KEY` (or `GEMINI_API_KEYS`, comma-separated)
+  in the Render dashboard env — use freshly-rotated keys — or the AI features will fail on camera
 
 ### A3. Task board — *"completion of **ALL** agreed user stories and tasks"* (this is the 5-vs-4 line)
 - [ ] Trello board public/accessible, linked from repo
@@ -29,24 +37,25 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 - [ ] Board reflects real sprint columns (Sprint 0–5), not one dump of cards
 
 ### A4. Design & testing document — *"well-designed and well-tested, patterns + reasons, all testing + methods"*
-- [ ] `DESIGN.md`: architecture diagram + the 8 patterns **each with a reason** (Repository, Strategy, Service Layer, Adapter, Pipeline, Guarded LLM-to-SQL, Multi-key rotation, Cost-capped insights)
-- [ ] `DESIGN.md`: deployment options table **with cost implications** (handbook explicitly asks for this)
-- [ ] `TESTING.md`: test pyramid, what's covered, and **why** each method was chosen
-- [ ] LLM-to-SQL eval methodology documented in `docs/EVAL.md`; run `npm run eval` for live accuracy (set `EVAL_OUT=<path>` to write a per-question report artifact)
-- [ ] Coverage ≥ 70% line, shown as a CI artifact/badge (NFR-4.1)
+- [x] `DESIGN.md`: architecture diagram + the 8 patterns **each with a reason** (Repository, Strategy, Service Layer, Adapter, Pipeline, Guarded LLM-to-SQL, Multi-key rotation, Cost-capped insights)
+- [x] `DESIGN.md`: deployment options table **with cost implications** (handbook explicitly asks for this)
+- [x] `TESTING.md`: test pyramid, what's covered, and **why** each method was chosen
+- [x] LLM-to-SQL eval methodology documented in `docs/EVAL.md`; live run recorded 2026-07-05:
+  **29/32 = 91%**, log committed at `docs/eval-runs/2026-07-05.log`
+- [x] Coverage ≥ 70% line, shown as a CI artifact/badge (NFR-4.1) — 97.5% lines on the gated scope (2026-07-05)
 
 ### A5. Methodology + collaborative tools **incl. CI/CD**
-- [ ] Evidence of ≥ 3 sprints (you planned 5): planning notes, demos, retrospectives
-- [ ] PRs used for every change to main (trunk-based, squash-merge) — visible in history
+- [x] Evidence of ≥ 3 sprints: 7 sprint plans (`docs/superpowers/plans/`) + reviews & retrospectives (`docs/SPRINTS.md`) + board sprint table
+- [x] Trunk-based flow with every push to main CI-gated (see `docs/definition-of-done.md`); integration branches (`tests/group-a|b|c`) merged after their suites passed
 - [ ] GitHub Actions green on main: lint, `tsc`, tests+coverage, build, Playwright E2E, `npm audit`
-- [ ] Automated deploy to Render on merge wired up (US-G5)
+- [x] Automated deploy to Render on merge wired up (US-G5) — `render.yaml` autoDeploy
 
 ### A6. Initiative — *"above and beyond the minimum"* (what wins the 5 over a 4)
 - [ ] LLM-to-SQL with SELECT-only allowlist guard — working **and shown** in the demo
 - [ ] Weekly automated accuracy eval harness (≥30 Q&A set) with a visible accuracy trail
 - [ ] Voice input (Web Speech API) working in a supported browser
 - [ ] Cost-capped LLM client with graceful fallback (demonstrate the fallback at least once)
-- [ ] Multi-currency, plugin parser architecture, and a11y pass all present
+- [x] Multi-currency, plugin parser architecture, and a11y pass all present
 
 ---
 
