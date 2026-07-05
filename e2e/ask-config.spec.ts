@@ -95,10 +95,8 @@ test.describe.serial("Ask & Configure — authenticated flows", () => {
     });
 
     await page.goto("/ask");
-    await page.getByRole("button", { name: "How much did I spend on Dining this month?" }).click();
-    await expect(page.getByLabel("Question")).toHaveValue(
-      "How much did I spend on Dining this month?",
-    );
+    await page.getByRole("button", { name: "How much did I spend on Groceries?" }).click();
+    await expect(page.getByLabel("Question")).toHaveValue("How much did I spend on Groceries?");
     await expect(page.getByText("n: 1")).toBeVisible();
 
     await page.unroute("**/api/qa");

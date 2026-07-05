@@ -45,7 +45,13 @@ export type QaResult = {
 };
 
 function buildPrompt(question: string): string {
-  return `${SCHEMA_DOC}\n\nQuestion: ${question}\nSQL:`;
+  const today = new Date().toISOString().slice(0, 10);
+  return `${SCHEMA_DOC}
+
+Today is ${today}. Resolve relative periods against it — "this month" is the current 'YYYY-MM', "last month" the previous one, "this year" the current year. Do not invent a month unrelated to today.
+
+Question: ${question}
+SQL:`;
 }
 
 /** Pull the bare SQL out of an LLM response: strip markdown fences and a trailing semicolon. */
@@ -74,6 +80,9 @@ function formatAnswer(rows: Record<string, unknown>[], baseCurrency: string): st
   if (rows.length === 0) return "No matching results.";
   if (rows.length === 1) {
     const entries = Object.entries(rows[0]);
+    // An aggregate over a period/category with no data comes back as one row of NULLs
+    // (e.g. SUM over zero rows) — say so plainly instead of showing a row of dashes.
+    if (entries.every(([, v]) => v === null || v === undefined)) return "No matching results.";
     if (entries.length === 1) {
       const [key, v] = entries[0];
       // Money columns are minor units. Match "minor" anywhere in the name so an aggregate alias

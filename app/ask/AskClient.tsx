@@ -12,9 +12,9 @@ type QaResult = {
 };
 
 const EXAMPLES = [
-  "How much did I spend on Dining this month?",
-  "What were my 5 biggest expenses in 2026-03?",
-  "How much did I earn vs spend in 2026-03?",
+  "How much did I spend on Groceries?",
+  "What were my 5 biggest expenses this month?",
+  "How much did I earn vs spend this month?",
 ];
 
 function cell(key: string, v: unknown): string {
