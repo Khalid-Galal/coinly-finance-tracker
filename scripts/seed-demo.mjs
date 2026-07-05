@@ -5,7 +5,7 @@
 // Render disk isn't reachable directly. Point it wherever the app is running:
 //
 //   BASE_URL=http://localhost:3000 APP_PASSCODE=... node scripts/seed-demo.mjs
-//   BASE_URL=https://coinly-kpdh.onrender.com APP_PASSCODE=coinly-demo-2026 node scripts/seed-demo.mjs
+//   BASE_URL=https://coinly-kpdh.onrender.com APP_PASSCODE=<passcode> node scripts/seed-demo.mjs
 //
 // Idempotency: bails if accounts already exist (re-running would 500 on the unique dedupeHash).
 // Pass --force to seed anyway (adds duplicates). ponytail: guard-and-bail beats a reset endpoint.
