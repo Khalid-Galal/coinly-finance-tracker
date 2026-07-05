@@ -23,7 +23,13 @@ async function account() {
   return (await db.account.create({ data: { name: "A", type: "bank", currency: "EGP" } })).id;
 }
 
-async function spend(accountId: string, date: string, minor: number, hash: string, categoryId?: string) {
+async function spend(
+  accountId: string,
+  date: string,
+  minor: number,
+  hash: string,
+  categoryId?: string,
+) {
   await db.transaction.create({
     data: {
       accountId,

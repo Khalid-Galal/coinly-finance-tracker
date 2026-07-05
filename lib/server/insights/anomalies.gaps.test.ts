@@ -80,7 +80,11 @@ describe("detectAnomalies — uncategorized and sorting", () => {
   it("flags an uncategorized (null category) spike as 'Uncategorized'", async () => {
     await history(null, 5000, 20000); // ratio 4
     const flag = (await detectAnomalies("2026-04")).find((f) => f.categoryId === null);
-    expect(flag).toMatchObject({ category: "Uncategorized", categoryId: null, currentMinor: 20000 });
+    expect(flag).toMatchObject({
+      category: "Uncategorized",
+      categoryId: null,
+      currentMinor: 20000,
+    });
   });
 
   it("sorts multiple flags by ratio descending", async () => {

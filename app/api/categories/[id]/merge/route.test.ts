@@ -32,7 +32,8 @@ async function txn(accountId: string, categoryId: string, hash: string) {
 
 describe("POST /api/categories/[id]/merge", () => {
   it("repoints transactions, rules, and budgets to the target, then archives the source (200)", async () => {
-    const acc = (await db.account.create({ data: { name: "A", type: "bank", currency: "EGP" } })).id;
+    const acc = (await db.account.create({ data: { name: "A", type: "bank", currency: "EGP" } }))
+      .id;
     const from = await cat("From");
     const to = await cat("To");
     await txn(acc, from.id, "t1");
@@ -72,7 +73,8 @@ describe("POST /api/categories/[id]/merge", () => {
   });
 
   it("rolls back atomically — a failed merge leaves the source's transactions untouched", async () => {
-    const acc = (await db.account.create({ data: { name: "A", type: "bank", currency: "EGP" } })).id;
+    const acc = (await db.account.create({ data: { name: "A", type: "bank", currency: "EGP" } }))
+      .id;
     const from = await cat("From");
     await txn(acc, from.id, "t1");
     // Target archived -> validation throws INSIDE the $transaction (after the from===to guard),
