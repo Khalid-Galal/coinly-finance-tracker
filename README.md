@@ -26,10 +26,40 @@ MSSE Capstone project — Quantic School of Business and Technology.
 ## Links
 
 - **Live demo:** **https://coinly-kpdh.onrender.com** (Render Starter — always-on, no cold start; a persistent 1 GB disk mounted at `/var/data` keeps the SQLite data across redeploys). The whole app is passcode-gated: visitors land on an **unlock screen**, enter the passcode (provided to the grader), and a cookie unlocks the UI. `/api/health` stays public.
-- **Task board:** [`TASK_BOARD.md`](./TASK_BOARD.md) — version-controlled mirror of the Trello Scrum board. _Trello link: TBD._
+- **Task board:** [`TASK_BOARD.md`](./TASK_BOARD.md) — the canonical Scrum board; its git history is the per-commit, real-time record of how the sprints actually ran. _Public Trello mirror: link added at submission._
+- **Sprint reviews & retrospectives:** [`docs/SPRINTS.md`](./docs/SPRINTS.md)
 - **Design & testing:** [`DESIGN.md`](./DESIGN.md) · [`TESTING.md`](./TESTING.md)
 - **Demo script:** [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md) — timed 15–20 min walkthrough for the recorded demonstration
 - **AI assistance disclosure:** [`AI_USAGE.md`](./AI_USAGE.md)
+
+## Above and beyond the brief
+
+Evidence of initiative, in one place:
+
+- **Guarded LLM-to-SQL** — generated SQL is parsed to an AST and rejected unless it is a single
+  read-only `SELECT` over allowlisted views ([`lib/server/qa/sqlAllowlist.ts`](./lib/server/qa/sqlAllowlist.ts)).
+- **Measured AI accuracy** — a 32-question live evaluation harness scores the Q&A pipeline against
+  ground-truth queries ([`lib/server/qa/evalSet.ts`](./lib/server/qa/evalSet.ts), `npm run eval`,
+  results in [`docs/EVAL.md`](./docs/EVAL.md)).
+- **Daily AI cost cap** — LLM insight generation is capped per day and falls back to a
+  deterministic non-AI report when the cap is reached
+  ([`lib/server/insights/costGuard.ts`](./lib/server/insights/costGuard.ts)).
+- **Gemini multi-key rotation** — quota errors rotate to the next configured API key
+  ([`lib/server/infra/keyRotation.ts`](./lib/server/infra/keyRotation.ts)).
+- **SHA-256 import dedupe** — re-importing the same statement skips duplicates
+  ([`lib/server/import/hash.ts`](./lib/server/import/hash.ts)).
+- **Multi-bank CSV parsers** — separate debit/credit (CIB, Banque Misr, NBE) and signed-amount
+  formats ([`lib/server/import/parsers/`](./lib/server/import/parsers)).
+- **Voice Q&A input** — speak a question, get it transcribed and answered, with a typed fallback
+  ([`app/ask/AskClient.tsx`](./app/ask/AskClient.tsx)).
+- **Privacy minimization** — only merchant + amount are ever sent to the LLM
+  ([`lib/server/categorize/llm.ts`](./lib/server/categorize/llm.ts)).
+- **CI coverage gate** — ≥ 70% enforced in CI; actual coverage is ~97% lines on the gated scope
+  ([`vitest.config.ts`](./vitest.config.ts)).
+- **Accessibility pass** — skip link, focus-visible styles, and aria labels across pages
+  ([`app/layout.tsx`](./app/layout.tsx), [`app/globals.css`](./app/globals.css)).
+- **Passcode gate** — the deployed instance is locked behind a passcode with a rate-limited unlock
+  endpoint ([`proxy.ts`](./proxy.ts), [`app/api/unlock/route.ts`](./app/api/unlock/route.ts)).
 
 ## Tech stack
 

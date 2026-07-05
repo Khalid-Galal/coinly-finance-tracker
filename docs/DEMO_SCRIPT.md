@@ -13,8 +13,8 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 
 ## Before you hit record (pre-flight)
 
-- [ ] **Warm the live instance** — open https://coinly-kpdh.onrender.com a few minutes early so the free-tier cold start is over.
-- [ ] **Set `APP_PASSCODE`** on Render and have it ready; **`GOOGLE_API_KEYS`** set so AI features work. If using Turso, confirm it's connected (else demo on SQLite and just don't redeploy mid-demo).
+- [ ] **Open the live instance** — https://coinly-kpdh.onrender.com (Render Starter, always-on — no cold start to wait out) and confirm it responds and unlocks.
+- [ ] **Set `APP_PASSCODE`** on Render and have it ready to enter on the unlock screen; **`GOOGLE_API_KEYS`** set so AI features work. Data lives on a persistent 1 GB disk, so the seeded demo data survives redeploys — no need to avoid deploying beforehand.
 - [ ] **Seed a little realistic data already** so the dashboard isn't empty: `BASE_URL=<live-url> APP_PASSCODE=<passcode> npm run seed:demo` (2 accounts + 3 months of transactions + budgets) — but keep one CSV import and one categorize/QA action *live* for the demo.
 - [ ] Have the two sample CSVs from [`docs/demo/`](./demo) ready: `cib-debit-credit.csv` (**debit/credit**, CIB/Banque Misr style) and `generic-signed-amount.csv` (**signed-amount**).
 - [ ] **Fallbacks ready:** if voice misfires, type the same question; if the AI cap/quota is hit, narrate the deterministic fallback as a *designed* behavior (it is).
@@ -28,10 +28,10 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 ### 0 · Intro & identity — 0:00–1:30
 - **Show government ID to camera** (name + photo legible), say your name and that this is the MSSE Capstone.
 - One-line pitch: *"Coinly is a self-hosted personal-finance tracker for Egyptian banks, with AI categorization, AI insights, and a natural-language + voice Q&A over your data."*
-- Flash the **repo** (green CI badge / Actions tab) and the **TASK_BOARD** — *"all agreed user stories done, P3 explicitly moved to v2."* Mention the stack in one breath: Next.js 16 + Prisma + Gemini, ~126 tests, 93% coverage gated in CI.
+- Flash the **repo** (green CI badge / Actions tab) and the **TASK_BOARD** — *"all agreed user stories done, P3 explicitly moved to v2."* Mention the stack in one breath: Next.js 16 + Prisma + Gemini, ~360 automated tests at ~97% line coverage on the CI-gated scope, plus Playwright end-to-end.
 
 ### 1 · First-run wizard & accounts (US-G1, G2, A7) — 1:30–3:00
-- Open the app → **first-run wizard** (`/welcome`): set **base currency** (US-G2), create the first **account**.
+- Open the app → land on the **unlock screen**, enter the passcode (one line: *"the deployed instance is passcode-gated"*) → **first-run wizard** (`/welcome`): set **base currency** (US-G2), create the first **account**.
 - Add a **second account** of a different type (bank + cash) → **US-A7 multiple accounts**.
 - *Range of inputs:* two account types, a currency choice.
 
@@ -68,10 +68,10 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 - Ask **two more shapes** for range: a **top-N** ("my 5 biggest expenses") and a **by-month** ("how much did I earn in March"). 
 - Explain the **guard (US-F2):** the LLM only writes a single read-only SELECT over allowlisted views, validated before execution — *"it can't be tricked into writing or reading anything else."*
 - **Voice (US-F4):** tap 🎤, speak a question, let it transcribe → answer read back. *If it misfires, immediately type the same question (fallback) and keep moving.*
-- Mention the **evaluation harness (US-F6):** 32 questions, measured ~94% accuracy — *"we don't just claim it works, we measure it."*
+- Mention the **evaluation harness (US-F6):** 32 questions, 91% on the latest full run (log committed in the repo) — *"we don't just claim it works, we measure it."*
 
 ### 8 · Engineering quality & close — 15:30–17:30
-- Briefly show: **GitHub Actions green** (lint/format/types/coverage-gate/build/e2e/audit), the **coverage gate** (~93%), and `docs/EVAL.md` / `DESIGN.md` (8 patterns with reasons, security: passcode gate, money as integer minor units).
+- Briefly show: **GitHub Actions green** (lint/format/types/coverage-gate/build/e2e/audit), the **coverage gate** (≥ 70% enforced; actual ~97% lines on the gated scope), and `docs/EVAL.md` / `DESIGN.md` (8 patterns with reasons, security: passcode gate, money as integer minor units).
 - One sentence of **initiative**: guarded LLM-to-SQL + voice + a measured eval + cost-capped AI with fallback + multi-key rotation + an adversarial-review pass that caught a real bug.
 - Close: thank you, name again, repo + live + board links are in the submission.
 
