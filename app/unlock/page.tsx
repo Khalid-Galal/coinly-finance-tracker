@@ -42,9 +42,10 @@ export default function UnlockPage() {
       <div className="card">
         <h1>Coinly</h1>
         <p>This demo is passcode-protected. Enter the passcode to continue.</p>
-        <form onSubmit={submit} style={{ display: "flex", gap: 8 }}>
+        <form onSubmit={submit} style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           <input
             type="password"
+            style={{ flex: 1, minWidth: 0 }}
             value={passcode}
             onChange={(e) => setPasscode(e.target.value)}
             aria-label="Passcode"

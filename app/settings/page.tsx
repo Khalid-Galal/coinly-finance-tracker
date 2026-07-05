@@ -54,7 +54,10 @@ export default function SettingsPage() {
           The default currency for new transactions and budgets, and the unit shown on the
           dashboard. Currently <strong>{baseCurrency || "…"}</strong>.
         </p>
-        <form onSubmit={save} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <form
+          onSubmit={save}
+          style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}
+        >
           <label>
             Currency code:{" "}
             <input

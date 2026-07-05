@@ -76,7 +76,16 @@ export default function WelcomeClient() {
     <main style={{ maxWidth: 520 }}>
       <div className="card">
         <h1>Welcome to Coinly</h1>
-        <ol style={{ display: "flex", gap: 12, listStyle: "none", padding: 0, fontSize: 13 }}>
+        <ol
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 12,
+            listStyle: "none",
+            padding: 0,
+            fontSize: 13,
+          }}
+        >
           {STEPS.map((label, i) => (
             <li
               key={label}
@@ -94,7 +103,10 @@ export default function WelcomeClient() {
         {step === 1 && (
           <section>
             <p>First, pick the currency you mostly use. You can change it later in Settings.</p>
-            <form onSubmit={saveCurrency} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+            <form
+              onSubmit={saveCurrency}
+              style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}
+            >
               <label>
                 Base currency:{" "}
                 <input

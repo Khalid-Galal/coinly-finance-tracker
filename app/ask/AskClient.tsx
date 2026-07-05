@@ -89,13 +89,13 @@ export function AskClient() {
           e.preventDefault();
           ask(question);
         }}
-        style={{ display: "flex", gap: 8, marginTop: 12 }}
+        style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}
       >
         <input
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
           placeholder="e.g. How much did I spend on Dining last month?"
-          style={{ flex: 1, padding: 8 }}
+          style={{ flex: 1, padding: 8, minWidth: 0 }}
           aria-label="Question"
         />
         <button type="submit" className="btn-primary" disabled={busy}>
@@ -145,30 +145,32 @@ export function AskClient() {
             <>
               <p style={{ fontWeight: 600 }}>{result.answer}</p>
               {result.rows.length > 0 && (
-                <table
-                  border={1}
-                  cellPadding={6}
-                  style={{ borderCollapse: "collapse", marginTop: 8 }}
-                >
-                  <thead>
-                    <tr>
-                      {columns.map((c) => (
-                        <th key={c}>{c}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {result.rows.map((row, ri) => (
-                      <tr key={ri}>
+                <div className="table-scroll">
+                  <table
+                    border={1}
+                    cellPadding={6}
+                    style={{ borderCollapse: "collapse", marginTop: 8 }}
+                  >
+                    <thead>
+                      <tr>
                         {columns.map((c) => (
-                          <td key={c} style={{ textAlign: /minor/i.test(c) ? "right" : "left" }}>
-                            {cell(c, row[c])}
-                          </td>
+                          <th key={c}>{c}</th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {result.rows.map((row, ri) => (
+                        <tr key={ri}>
+                          {columns.map((c) => (
+                            <td key={c} style={{ textAlign: /minor/i.test(c) ? "right" : "left" }}>
+                              {cell(c, row[c])}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </>
           )}

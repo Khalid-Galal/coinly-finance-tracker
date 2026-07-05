@@ -110,7 +110,10 @@ export default function BudgetsPage() {
       </p>
 
       <div className="card">
-        <form onSubmit={onSubmit} style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <form
+          onSubmit={onSubmit}
+          style={{ display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }}
+        >
           <select name="categoryId" defaultValue="" required>
             <option value="" disabled>
               Category…
@@ -150,7 +153,14 @@ export default function BudgetsPage() {
         <ul style={{ listStyle: "none", padding: 0 }}>
           {progress.map((p) => (
             <li key={p.id} style={{ marginBottom: 16 }}>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0 8px",
+                  justifyContent: "space-between",
+                }}
+              >
                 <strong>{p.categoryName}</strong>
                 <span style={{ color: COLORS[p.status] }}>
                   {egp(p.spentMinor)} / {egp(p.budgetMinor)} {baseCurrency} (
@@ -179,7 +189,16 @@ export default function BudgetsPage() {
                   }}
                 />
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 2 }}>
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: "0 8px",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 2,
+                }}
+              >
                 <small style={{ color: COLORS[p.status] }}>
                   {p.status === "over"
                     ? `${LABEL.over} by ${egp(p.spentMinor - p.budgetMinor)} ${baseCurrency}`

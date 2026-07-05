@@ -115,6 +115,8 @@ textarea {
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--text);
+  /* Never wider than the container — caps size= attributes and long <option> text on phones. */
+  max-width: 100%;
 }
 input:focus,
 select:focus,
@@ -351,6 +353,27 @@ table {
   main {
     padding: 20px 16px 48px;
   }
+  th,
+  td {
+    padding: 8px 10px;
+  }
+  /* Nav links: one horizontally-swipeable row under the brand instead of 3+ wrapped rows
+     of sticky header eating the small viewport. */
+  .site-nav__inner {
+    padding: 0 12px;
+    gap: 12px;
+  }
+  .site-nav__links {
+    flex-basis: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-left: 0;
+    padding-bottom: 8px;
+  }
+  .site-nav__links a {
+    white-space: nowrap;
+  }
 }
 
 /* Horizontal scroll for tables too wide for the viewport, instead of breaking the layout. */
@@ -358,4 +381,10 @@ table {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   max-width: 100%;
+}
+/* Inside the scroller, let the table take its natural width — otherwise shrink-to-fit
+   squeezes columns to min-content (dates wrap mid-value) before the scroll ever engages. */
+.table-scroll table {
+  width: max-content;
+  max-width: none;
 }

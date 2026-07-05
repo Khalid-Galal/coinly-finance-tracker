@@ -142,7 +142,7 @@ export default function CategoriesPage() {
                 value={drafts[c.id] ?? ""}
                 onChange={(e) => setDrafts((d) => ({ ...d, [c.id]: e.target.value }))}
                 maxLength={100}
-                style={{ flex: 1 }}
+                style={{ flex: 1, minWidth: 0 }}
               />
               <button
                 type="button"
