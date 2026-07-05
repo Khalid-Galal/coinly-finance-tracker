@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+// Client page for AI insights: generates weekly/monthly summaries and shows spending anomalies
+// plus the daily AI usage cap, all loaded from /api/insights.
 type Insight = {
   id: string;
   type: string;

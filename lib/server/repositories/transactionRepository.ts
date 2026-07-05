@@ -2,6 +2,8 @@ import { db } from "../db";
 import { dedupeHash } from "../import/hash";
 import type { TransactionInput } from "../../shared/schemas";
 
+// Prisma CRUD repository for transactions: computes a dedupe hash on create and writes an
+// audit-log entry for every create/update/delete.
 async function writeAudit(
   entityId: string,
   action: string,

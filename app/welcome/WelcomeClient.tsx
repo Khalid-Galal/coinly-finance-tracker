@@ -2,6 +2,8 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 
+// Client component for the first-run wizard: base currency -> first account -> add data,
+// saved via /api/settings and /api/accounts.
 const STEPS = ["Base currency", "First account", "Add data"];
 
 export default function WelcomeClient() {

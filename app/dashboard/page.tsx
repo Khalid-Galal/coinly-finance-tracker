@@ -8,6 +8,8 @@ import { summarize } from "@/lib/server/analytics/summary";
 import { monthlyTrend } from "@/lib/server/analytics/trend";
 import { getBaseCurrency } from "@/lib/server/settings/settingService";
 
+// Server-rendered dashboard: range-preset income/expense/net stats, category spending bars, and a
+// 6-month trend chart, computed by the lib/server/analytics queries over the Prisma database.
 export const dynamic = "force-dynamic";
 
 const fmt = (minor: number) => (minor / 100).toFixed(2);

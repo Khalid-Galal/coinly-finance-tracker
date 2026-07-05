@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+// Client table for the transactions page: renders server-provided rows with an inline category
+// picker (PATCH /api/transactions/:id) and a bulk auto-categorize action (POST /api/categorize).
 type Txn = {
   id: string;
   date: string;
