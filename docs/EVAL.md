@@ -54,14 +54,19 @@ Calls are throttled ~1.2 s apart to stay under the free-tier per-minute cap.
 
 ## Measured result
 
-Representative run (2026-06-25, gemini-2.5-flash): **15 / 16 answered correctly = 94%**, against a
-**70% acceptance target**. The remaining 16 questions were skipped after the shared free-tier daily
-quota across all 7 keys was exhausted mid-run.
+Latest full run (2026-07-05, gemini-2.5-flash, all 32 questions answered, 0 quota skips):
+**29 / 32 = 91%**, against a **70% acceptance target**. Raw console log committed at
+[`eval-runs/2026-07-05.log`](./eval-runs/2026-07-05.log).
 
-The single genuine miss was `biggest-expense-amt` ("largest single expense"): the model returned the
-signed amount (`-30000`) where the reference uses the magnitude (`30000`) — a sign-convention
-disagreement rather than a wrong figure. Everything else (totals, per-category/month spend, counts,
-rankings) matched exactly.
+All three misses are the same failure mode — sign-convention disagreement on superlative-expense
+questions (`biggest-expense-amt`, `biggest-expense-desc`, `smallest-expense`): expenses are stored
+as negative amounts, so "largest expense" is `MIN(amountMinor)` by magnitude, and the model
+sometimes returns the signed value (or flips MIN/MAX) where the reference expects the magnitude.
+Every other shape (totals, per-category/month spend, counts, rankings, filters) matched exactly.
 
-**Caveat:** exact accuracy varies run-to-run with free-tier quota. Re-run `npm run eval` with fresh
-quota to reproduce; set `EVAL_OUT=<path>` to also write a per-question PASS/FAIL/SKIP report.
+An earlier quota-truncated run (2026-06-25) scored 15/16 answered = 94% with the same
+single failure mode, so accuracy is stable in the low-90s across runs.
+
+**Caveat:** exact accuracy varies run-to-run with model nondeterminism and free-tier quota. Re-run
+`npm run eval` with fresh quota to reproduce; set `EVAL_OUT=<path>` to also write a per-question
+PASS/FAIL/SKIP report.

@@ -1,0 +1,31 @@
+
+ RUN  v4.1.9 D:/khaled/MSSE/Capston
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": SQLite database "test.db" at "file:./test.db"
+
+3 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+stdout | lib/server/qa/evalLive.test.ts > live Q&A eval (real Gemini) > answers at least 70% of answered questions correctly
+WRONG biggest-expense-amt — "What was my largest single expense?"
+  sql: SELECT MIN(amountMinor) AS largestExpenseMinor FROM v_transactions WHERE amountMinor < 0
+  reason: answer mismatch
+WRONG biggest-expense-desc — "What is my biggest expense and what was it for?"
+  sql: SELECT description, amountMinor AS biggestExpenseMinor FROM v_transactions WHERE amountMinor < 0 ORDER BY amountMinor ASC LIMIT 1
+  reason: answer mismatch
+WRONG smallest-expense — "What was my smallest expense?"
+  sql: SELECT MAX(amountMinor) AS smallestExpenseMinor FROM v_transactions WHERE amountMinor < 0
+  reason: answer mismatch
+
+Q&A accuracy: 29/32 answered = 91% (0 skipped: rate-limit/quota)
+
+ ✓ lib/server/qa/evalLive.test.ts > live Q&A eval (real Gemini) > answers at least 70% of answered questions correctly 85584ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  13:48:09
+   Duration  88.51s (transform 151ms, setup 32ms, import 477ms, tests 85.59s, environment 0ms)
+
