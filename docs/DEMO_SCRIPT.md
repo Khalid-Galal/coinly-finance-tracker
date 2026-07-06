@@ -9,6 +9,9 @@ A timed walkthrough for the Capstone **Presentation Rubric** (score 5):
 
 Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live** instance.
 
+> **Word-for-word spoken script:** [`PRESENTATION_SCRIPT.md`](./PRESENTATION_SCRIPT.md) — simple
+> English, timed, with fallback lines. This file stays the planning/coverage reference.
+
 ---
 
 ## Before you hit record (pre-flight)
@@ -33,6 +36,7 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 ### 1 · First-run wizard & accounts (US-G1, G2, A7) — 1:30–3:00
 - Open the app → land on the **unlock screen**, enter the passcode (one line: *"the deployed instance is passcode-gated"*) → **first-run wizard** (`/welcome`): set **base currency** (US-G2), create the first **account**.
 - Add a **second account** of a different type (bank + cash) → **US-A7 multiple accounts**.
+- One line for **US-A8**: amounts in a non-base currency are converted with **daily exchange rates** (fetched + cached automatically).
 - *Range of inputs:* two account types, a currency choice.
 
 ### 2 · Import + duplicate detection (US-A2/A3/A4, A5, A6) — 3:00–5:00
@@ -43,6 +47,7 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 - *Range of inputs:* two CSV formats + manual entry + the dedupe path.
 
 ### 3 · AI categorization + learning (US-B3, B4, B5, B6) — 5:00–7:00
+- One line for **US-B1**: Coinly ships with a **default category taxonomy** (groceries, fuel, rent…) so it's useful from minute one.
 - On Transactions, click **Auto-categorize** → rows get categories (rules-first, Gemini for the rest).
 - **Correct one** category inline → explain it **creates a rule and learns** (US-B4), so similar merchants categorize correctly next time.
 - Note the **privacy stance:** only merchant + amount go to the model, never full transaction data.
@@ -52,6 +57,7 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 - **Summary card** (income/expense/net in your base currency), **spending-by-category** breakdown, **6-month trend** chart.
 - Switch **date-range presets** (this-month / last-3-months) → numbers update (US-C5).
 - Quick hop to **Manage categories** → rename one, **merge** two → explain merge repoints transactions/rules/budgets safely (mention it was hardened by an adversarial review that caught a data-loss bug).
+- **US-C6 moment:** narrow the browser window to phone width for ~5 s — *"fully responsive, works on a phone"* — then restore.
 
 ### 5 · Budgets (US-E1, E2, E3) — 9:00–10:30
 - Set a **monthly budget** for a category → **progress bar**.
@@ -64,14 +70,15 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 - **Show the cost cap (US-D4):** the usage meter, and — if you pre-set `INSIGHT_DAILY_LLM_CAP` low — generate once more to show it **falls back to a deterministic non-AI report**. Frame it as *designed graceful degradation*, which also keeps the demo running if quota is exhausted.
 
 ### 7 · Natural-language + voice Q&A — the headline (US-F1, F2, F3, F4, F6) — 12:30–15:30
-- Ask a typed question: *"How much did I spend on Dining last month?"* → answer + result table + **expand "Show generated SQL"** (US-F3 transparency).
-- Ask **two more shapes** for range: a **top-N** ("my 5 biggest expenses") and a **by-month** ("how much did I earn in March"). 
+- Ask a typed question: *"How much did I spend on groceries last month?"* → answer + result table + **expand "Show generated SQL"** (US-F3 transparency).
+- Ask **two more shapes** for range: a **ranking** ("which category did I spend the most on last month?") and a **by-month** ("how much did I earn in May?"). **Avoid "biggest expense" superlatives on camera** — that's the one shape the eval log shows can miss (sign convention); stick to shapes that scored 100%, on months that exist in the seeded data (May–Jul 2026).
 - Explain the **guard (US-F2):** the LLM only writes a single read-only SELECT over allowlisted views, validated before execution — *"it can't be tricked into writing or reading anything else."*
 - **Voice (US-F4):** tap 🎤, speak a question, let it transcribe → answer read back. *If it misfires, immediately type the same question (fallback) and keep moving.*
 - Mention the **evaluation harness (US-F6):** 32 questions, 91% on the latest full run (log committed in the repo) — *"we don't just claim it works, we measure it."*
 
 ### 8 · Engineering quality & close — 15:30–17:30
 - Briefly show: **GitHub Actions green** (lint/format/types/coverage-gate/build/e2e/audit), the **coverage gate** (≥ 70% enforced; actual ~97% lines on the gated scope), and `docs/EVAL.md` / `DESIGN.md` (8 patterns with reasons, security: passcode gate, money as integer minor units).
+- One line for **US-A1**: the data model is a **typed Prisma schema with versioned migrations**, applied automatically at every deploy.
 - One sentence of **initiative**: guarded LLM-to-SQL + voice + a measured eval + cost-capped AI with fallback + multi-key rotation + an adversarial-review pass that caught a real bug.
 - Close: thank you, name again, repo + live + board links are in the submission.
 
@@ -81,13 +88,13 @@ Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live*
 
 | Segment | User stories shown |
 |---|---|
-| 1 | G1, G2, A7 |
+| 1 | G1, G2, A7, A8 (daily FX rates line) |
 | 2 | A2, A3, A4, A5, A6 |
-| 3 | B3, B4, B5, B6 |
-| 4 | C1, C2, C5, C3, B2 |
+| 3 | B1 (default taxonomy line), B3, B4, B5, B6 |
+| 4 | C1, C2, C5, C3, B2, C6 (phone-width moment) |
 | 5 | E1, E2, E3 |
 | 6 | D1, D2, D3, D4 |
 | 7 | F1, F2, F3, F4, F6 |
-| 8 | G4 (CI), G5 (deploy), G6 (coverage), G7 (docs) |
+| 8 | A1 (Prisma schema line), G4 (CI), G5 (deploy), G6 (coverage), G7 (docs) |
 
 Every committed story appears. If you run long, the safe trims are segment 4's category-merge aside and one of the segment-7 extra question shapes.

@@ -29,7 +29,7 @@ MSSE Capstone project — Quantic School of Business and Technology.
 - **Task board:** [`TASK_BOARD.md`](./TASK_BOARD.md) — the canonical Scrum board; its git history is the per-commit, real-time record of how the sprints actually ran. Public Trello mirror: **[trello.com/b/hximpaKr](https://trello.com/b/hximpaKr)**.
 - **Sprint reviews & retrospectives:** [`docs/SPRINTS.md`](./docs/SPRINTS.md)
 - **Design & testing:** [`DESIGN.md`](./DESIGN.md) · [`TESTING.md`](./TESTING.md)
-- **Demo script:** [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md) — timed 15–20 min walkthrough for the recorded demonstration
+- **Demo script:** [`docs/DEMO_SCRIPT.md`](./docs/DEMO_SCRIPT.md) — timed 15–20 min walkthrough for the recorded demonstration, with a word-for-word spoken script in [`docs/PRESENTATION_SCRIPT.md`](./docs/PRESENTATION_SCRIPT.md)
 - **AI assistance disclosure:** [`AI_USAGE.md`](./AI_USAGE.md)
 
 ## Above and beyond the brief
