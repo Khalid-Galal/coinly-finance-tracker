@@ -11,9 +11,9 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 - [ ] Repo shared with the **quantic-grader** GitHub account (access confirmed, not just invited)
 - [x] `README.md`: setup, configuration, env vars, local + deploy instructions (NFR-4.3)
 - [x] All public functions/modules have TypeScript types + JSDoc (NFR-4.2)
-- [ ] No secrets committed — keys only in env vars (NFR-3.1); `.env.example` present ⚠️ *(tree is clean
-  — a passcode that briefly sat in a seed-script comment was scrubbed in `0c51a0a`; **rotate
-  `APP_PASSCODE` on Render** to invalidate the historical value, then tick)*
+- [x] No secrets committed — keys only in env vars (NFR-3.1); `.env.example` present ⚠️ *(tree is clean
+  — a passcode that briefly sat in a seed-script comment was scrubbed in `0c51a0a`; `APP_PASSCODE`
+  rotated on Render 2026-07-06 and verified: old value rejected 401, new value unlocks)*
 - [x] `LICENSE` is MIT or Apache-2.0 (NFR-6.3)
 - [x] `AI_USAGE.md` + `CITATIONS.md` present and current — **plagiarism = automatic 0**
 
