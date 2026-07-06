@@ -26,15 +26,15 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 - [x] Seeded with realistic demo data (2026-07-05): 2 accounts + 44 transactions across 3 months +
   3 current-month budgets, via `npm run seed:demo`. Still run the **Post-deploy smoke test** (§D)
   before recording
-- [ ] ⚠️ **Gemini keys are NOT configured on Render** — live `/api/qa` returns "No Gemini API keys
-  configured" and insight generation 500s. Add `GEMINI_API_KEY` (or `GEMINI_API_KEYS`, comma-separated)
-  in the Render dashboard env — use freshly-rotated keys — or the AI features will fail on camera
+- [x] ~~Gemini keys are NOT configured on Render~~ — added 2026-07-06; verified live: `/api/qa`
+  answers correctly and `POST /api/insights` generates via gemini-2.5-flash
 
 ### A3. Task board — *"completion of **ALL** agreed user stories and tasks"* (this is the 5-vs-4 line)
-- [ ] Trello board public/accessible, linked from repo
-- [ ] Every **committed** story (Epics A–G) sits in **Done** ⚠️
-- [ ] Anything not finished was moved to a separate **v2/backlog** column *before* submission — so the agreed set reads 100% complete, not 80% of a bigger list ⚠️
-- [ ] Board reflects real sprint columns (Sprint 0–5), not one dump of cards
+- [x] Trello board public/accessible, linked from repo — [trello.com/b/hximpaKr](https://trello.com/b/hximpaKr),
+  verified logged-out 2026-07-06; linked from README + TASK_BOARD
+- [x] Every **committed** story (Epics A–G) sits in **Done** ⚠️ — all 37 delivered stories in sprint ✅ lists
+- [x] Anything not finished was moved to a separate **v2/backlog** column *before* submission — B7/C4/F5/G3 in "v2 Backlog (deferred P3)" ⚠️
+- [x] Board reflects real sprint columns (Sprint 0–6), not one dump of cards
 
 ### A4. Design & testing document — *"well-designed and well-tested, patterns + reasons, all testing + methods"*
 - [x] `DESIGN.md`: architecture diagram + the 8 patterns **each with a reason** (Repository, Strategy, Service Layer, Adapter, Pipeline, Guarded LLM-to-SQL, Multi-key rotation, Cost-capped insights)

@@ -3,13 +3,13 @@
 This version-controlled file is the **canonical Scrum board** for the project (SRS §12.2).
 **A story's status is flipped here in the same commit/PR that delivers it**, so this file's git
 history (`git log -- TASK_BOARD.md`) is the per-commit, real-time record of board updates. A public
-Trello mirror of this board will be linked here at submission. This board documents completion of
+Trello mirror of this board is linked below. This board documents completion of
 **all agreed user stories** — directly serving the Project Rubric (score 5): *"an up-to-date task
 board showing completion of all agreed user stories and tasks."*
 
-**Trello mirror:** _public board link to be added at submission_
+**Trello mirror:** [trello.com/b/hximpaKr](https://trello.com/b/hximpaKr) (public)
 
-**Last updated:** 2026-07-05
+**Last updated:** 2026-07-06
 
 **Status:** ☐ Todo · ◐ In progress · ☑ Done · ⏸ Blocked · ✂ Moved to v2
 **Tiers (roadmap §4):** P0 never cut · P1 the pass · P2 wins the 5 (protect) · P3 first to v2
@@ -97,10 +97,10 @@ delivered; A4 (NBE) was in the cut set but shipped via the shared debit/credit p
 
 ## Submission logistics (not user stories — tracked in [PRE_SUBMISSION_CHECKLIST.md](PRE_SUBMISSION_CHECKLIST.md))
 
-Two delivery-logistics items remain before submission. They are not agreed user stories or sprint
-tasks, so they live in the pre-submission checklist rather than on this board:
+One delivery-logistics item remains before submission. It is not an agreed user story or sprint
+task, so it lives in the pre-submission checklist rather than on this board:
 
-- Publish the Trello mirror of this board and add its link in the header slot above.
+- ~~Publish the Trello mirror of this board~~ — done 2026-07-06: [trello.com/b/hximpaKr](https://trello.com/b/hximpaKr).
 - Record the demo video (script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)).
 
 ## Definition of Done (per story)
