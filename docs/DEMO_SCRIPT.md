@@ -9,9 +9,6 @@ A timed walkthrough for the Capstone **Presentation Rubric** (score 5):
 
 Target run time **≈17:30** (buffer on both ends). Rehearse once on the **live** instance.
 
-> **Word-for-word spoken script:** [`PRESENTATION_SCRIPT.md`](./PRESENTATION_SCRIPT.md) — simple
-> English, timed, with fallback lines. This file stays the planning/coverage reference.
-
 ---
 
 ## Before you hit record (pre-flight)
