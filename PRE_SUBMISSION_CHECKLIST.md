@@ -20,7 +20,8 @@ Presentation-rubric line. Items marked ⚠️ are the highest-risk gates to the 
 ### A2. Deployed version — *"link to the deployed version (if a Web application)"*
 - [x] Live Render URL reachable from the README ⚠️ (verified 2026-07-05: `/api/health` 200, root → `/unlock`;
   SQLite persists on the Starter disk — data survives redeploys)
-- [ ] Passcode gate works **and the passcode is given to the grader** (in README or submission) ⚠️
+- [x] Passcode gate works **and the passcode is given to the grader** (in README or submission) ⚠️
+  (2026-07-11: passcode `coinly-995e9acb` added to README §Links; unlock verified live, HTTP 200)
 - [x] HTTPS enforced (NFR-3.3)
 - [x] Always-on (Render Starter) — no cold start to warm
 - [x] Seeded with realistic demo data (2026-07-05): 2 accounts + 44 transactions across 3 months +
