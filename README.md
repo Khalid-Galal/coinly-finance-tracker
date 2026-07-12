@@ -5,6 +5,8 @@
 Self-hosted personal finance tracker with AI categorization, insights, and voice Q&A.
 MSSE Capstone project — Quantic School of Business and Technology.
 
+**🔗 Live app:** [coinly-kpdh.onrender.com](https://coinly-kpdh.onrender.com) (passcode: `coinly-995e9acb`) · **📋 Task board:** [trello.com/b/hximpaKr](https://trello.com/b/hximpaKr)
+
 ## Features
 
 - **Data in** — import bank CSVs in either a single signed-amount column or separate debit/credit
